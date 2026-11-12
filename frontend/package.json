@@ -1,0 +1,21 @@
+{
+  "name": "law-service-site",
+  "version": "1.0.0",
+  "private": true,
+  "description": "尤鲁都斯巴格司法所普法宣传站 - Vue3 + Vite + Python 全栈示例",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "axios": "^1.7.9",
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.1",
+    "vite": "^6.0.7"
+  }
+}

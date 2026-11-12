@@ -1,0 +1,13 @@
+# 忽略依赖与构建产物
+node_modules/
+dist/
+.venv/
+__pycache__/
+*.pyc
+.env
+.env.local
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+npm-debug.log*
