@@ -1,4 +1,4 @@
-"""尤鲁都斯巴格司法所普法宣传站 —— Python 后端接口。
+"""葡萄产业信息站 —— Python 后端接口。
 
 启动：uvicorn app.main:app --reload --port 8000（在 backend 目录下执行）
 文档：http://127.0.0.1:8000/docs
@@ -14,8 +14,8 @@ from pydantic import BaseModel, Field
 from . import data
 
 app = FastAPI(
-    title="尤鲁都斯巴格司法所普法宣传站 API",
-    description="为 Vue3 前端提供培训活动、法律知识、站点信息等数据的示例接口",
+    title="葡萄产业信息站 API",
+    description="为 Vue3 前端提供品种库、参考行情、栽培知识与站点信息等数据的示例接口",
     version="1.0.0",
 )
 
@@ -50,13 +50,13 @@ def get_stats():
     return {"items": data.STATS}
 
 
-@app.get("/api/activities", summary="培训活动列表")
-def list_activities(
+@app.get("/api/varieties", summary="品种列表")
+def list_varieties(
     keyword: Optional[str] = None,
     category: Optional[str] = None,
     limit: Optional[int] = None,
 ):
-    items = data.ACTIVITIES
+    items = data.VARIETIES
     if category:
         items = [item for item in items if item["category"] == category]
     if keyword:
@@ -64,7 +64,7 @@ def list_activities(
         items = [
             item
             for item in items
-            if kw in item["title"].lower()
+            if kw in item["name"].lower()
             or kw in item["summary"].lower()
             or any(kw in tag.lower() for tag in item.get("tags", []))
         ]
@@ -73,20 +73,33 @@ def list_activities(
     return {"total": len(items), "items": items}
 
 
-@app.get("/api/activities/{activity_id}", summary="培训活动详情")
-def get_activity(activity_id: str):
-    for item in data.ACTIVITIES:
-        if item["id"] == activity_id:
+@app.get("/api/varieties/{variety_id}", summary="品种详情")
+def get_variety(variety_id: str):
+    for item in data.VARIETIES:
+        if item["id"] == variety_id:
             return item
-    raise HTTPException(status_code=404, detail="活动不存在")
+    raise HTTPException(status_code=404, detail="品种不存在")
 
 
-@app.get("/api/laws", summary="法律知识列表")
-def list_laws():
-    return {"total": len(data.LAWS), "items": data.LAWS}
+@app.get("/api/prices", summary="参考行情列表")
+def list_prices(
+    variety: Optional[str] = None,
+    region: Optional[str] = None,
+):
+    items = data.PRICES
+    if variety:
+        items = [item for item in items if item["variety"] == variety]
+    if region:
+        items = [item for item in items if region in item["region"]]
+    return {"total": len(items), "items": items}
 
 
-@app.get("/api/about", summary="站点与单位信息")
+@app.get("/api/knowledge", summary="栽培知识列表")
+def list_knowledge():
+    return {"total": len(data.KNOWLEDGE), "items": data.KNOWLEDGE}
+
+
+@app.get("/api/about", summary="站点信息与联系方式")
 def get_about():
     return data.ABOUT
 

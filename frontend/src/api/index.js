@@ -43,15 +43,15 @@ async function withFallback(request, fallback) {
   }
 }
 
-function filterActivities(params = {}) {
+function filterVarieties(params = {}) {
   const { keyword, category, limit } = params
-  let items = mockData.activities
+  let items = mockData.varieties
   if (category) items = items.filter((item) => item.category === category)
   if (keyword) {
     const kw = keyword.toLowerCase()
     items = items.filter(
       (item) =>
-        item.title.toLowerCase().includes(kw) ||
+        item.name.toLowerCase().includes(kw) ||
         item.summary.toLowerCase().includes(kw) ||
         item.tags.some((tag) => tag.toLowerCase().includes(kw))
     )
@@ -60,20 +60,34 @@ function filterActivities(params = {}) {
   return { total: items.length, items }
 }
 
+function filterPrices(params = {}) {
+  const { variety, region } = params
+  let items = mockData.prices
+  if (variety) items = items.filter((item) => item.variety === variety)
+  if (region) items = items.filter((item) => item.region.includes(region))
+  return { total: items.length, items }
+}
+
 export const api = {
   getStats: () => withFallback(() => http.get('/stats'), { items: mockData.stats }),
-  getActivities: (params) =>
-    withFallback(() => http.get('/activities', { params }), () => filterActivities(params)),
-  getActivity: (id) =>
+  getVarieties: (params) =>
+    withFallback(() => http.get('/varieties', { params }), () => filterVarieties(params)),
+  getVariety: (id) =>
     withFallback(
-      () => http.get(`/activities/${id}`),
+      () => http.get(`/varieties/${id}`),
       () => {
-        const found = mockData.activities.find((item) => item.id === id)
-        if (!found) throw new Error('活动不存在')
+        const found = mockData.varieties.find((item) => item.id === id)
+        if (!found) throw new Error('品种不存在')
         return found
       }
     ),
-  getLaws: () => withFallback(() => http.get('/laws'), { total: mockData.laws.length, items: mockData.laws }),
+  getPrices: (params) =>
+    withFallback(() => http.get('/prices', { params }), () => filterPrices(params)),
+  getKnowledge: () =>
+    withFallback(() => http.get('/knowledge'), {
+      total: mockData.knowledge.length,
+      items: mockData.knowledge
+    }),
   getAbout: () => withFallback(() => http.get('/about'), mockData.about),
   sendMessage: (payload) =>
     withFallback(() => http.post('/messages', payload), {

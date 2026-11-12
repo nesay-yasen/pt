@@ -1,8 +1,8 @@
 <template>
   <section class="container page">
     <header class="page-head">
-      <h1>法律知识</h1>
-      <p>由后端 <code>GET /api/laws</code> 返回的普法知识条目，可按类别过滤。</p>
+      <h1>栽培知识</h1>
+      <p>由后端 <code>GET /api/knowledge</code> 返回的技术条目，按环节分类查看。</p>
     </header>
 
     <div class="filters">
@@ -21,14 +21,14 @@
     <div v-if="loading" class="state">加载中…</div>
     <div v-else-if="error" class="state error">{{ error }}</div>
     <div v-else class="cards">
-      <article v-for="law in filtered" :key="law.id" class="card item">
+      <article v-for="item in filtered" :key="item.id" class="card item">
         <div class="item-head">
-          <h2>{{ law.name }}</h2>
-          <span class="tag">{{ law.category }}</span>
+          <h2>{{ item.title }}</h2>
+          <span class="tag">{{ item.category }}</span>
         </div>
-        <p class="digest">{{ law.digest }}</p>
+        <p class="digest">{{ item.digest }}</p>
         <ul>
-          <li v-for="point in law.points" :key="point">{{ point }}</li>
+          <li v-for="point in item.points" :key="point">{{ point }}</li>
         </ul>
       </article>
     </div>
@@ -39,19 +39,20 @@
 import { computed, onMounted, ref } from 'vue'
 import { api } from '../api'
 
-const laws = ref([])
+const items = ref([])
 const loading = ref(true)
 const error = ref('')
 const category = ref('全部')
-const categories = computed(() => ['全部', ...new Set(laws.value.map((l) => l.category))])
+
+const categories = computed(() => ['全部', ...new Set(items.value.map((i) => i.category))])
 const filtered = computed(() =>
-  category.value === '全部' ? laws.value : laws.value.filter((l) => l.category === category.value)
+  category.value === '全部' ? items.value : items.value.filter((i) => i.category === category.value)
 )
 
 onMounted(async () => {
   try {
-    const res = await api.getLaws()
-    laws.value = res.items || []
+    const res = await api.getKnowledge()
+    items.value = res.items || []
   } catch (e) {
     error.value = e.message
   } finally {
@@ -90,7 +91,7 @@ onMounted(async () => {
   border-radius: 999px;
   border: 1px solid #d9e2ec;
   background: #fff;
-  color: #33465c;
+  color: #4a4256;
   font-size: 13px;
   cursor: pointer;
 }
@@ -127,6 +128,6 @@ onMounted(async () => {
   padding-left: 18px;
   font-size: 13px;
   line-height: 1.95;
-  color: #33465c;
+  color: #423a4c;
 }
 </style>

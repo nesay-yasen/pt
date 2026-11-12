@@ -8,28 +8,34 @@ const routes = [
     meta: { title: '首页' }
   },
   {
-    path: '/activities',
-    name: 'activities',
-    component: () => import('../views/ActivitiesView.vue'),
-    meta: { title: '培训活动' }
+    path: '/varieties',
+    name: 'varieties',
+    component: () => import('../views/VarietiesView.vue'),
+    meta: { title: '品种库' }
   },
   {
-    path: '/activities/:id',
-    name: 'activity-detail',
-    component: () => import('../views/ActivityDetailView.vue'),
-    meta: { title: '活动详情' }
+    path: '/varieties/:id',
+    name: 'variety-detail',
+    component: () => import('../views/VarietyDetailView.vue'),
+    meta: { title: '品种详情' }
   },
   {
-    path: '/laws',
-    name: 'laws',
-    component: () => import('../views/LawsView.vue'),
-    meta: { title: '法律知识' }
+    path: '/prices',
+    name: 'prices',
+    component: () => import('../views/PricesView.vue'),
+    meta: { title: '参考行情' }
+  },
+  {
+    path: '/knowledge',
+    name: 'knowledge',
+    component: () => import('../views/KnowledgeView.vue'),
+    meta: { title: '栽培知识' }
   },
   {
     path: '/about',
     name: 'about',
     component: () => import('../views/AboutView.vue'),
-    meta: { title: '关于我们' }
+    meta: { title: '关于本站' }
   },
   {
     path: '/:pathMatch(.*)*',
@@ -50,7 +56,7 @@ const router = createRouter({
 })
 
 router.afterEach((to) => {
-  const base = '尤鲁都斯巴格司法所 · 普法宣传站'
+  const base = '葡萄产业信息站'
   document.title = to.meta.title ? `${to.meta.title} | ${base}` : base
 })
 

@@ -1,7 +1,7 @@
 <template>
   <section class="container page">
     <header class="page-head">
-      <h1>关于我们</h1>
+      <h1>关于本站</h1>
       <p>{{ about.name }} · 数据来源 <code>GET /api/about</code></p>
     </header>
 
@@ -9,25 +9,26 @@
     <div v-else-if="error" class="state error">{{ error }}</div>
     <div v-else class="grid">
       <div class="card panel">
-        <h2 class="section-title">工作职责</h2>
+        <h2 class="section-title">站点简介</h2>
         <p>{{ about.intro }}</p>
         <ul>
-          <li v-for="duty in about.duties" :key="duty">{{ duty }}</li>
+          <li v-for="item in about.duties" :key="item">{{ item }}</li>
         </ul>
       </div>
 
       <div class="card panel">
-        <h2 class="section-title">联系方式</h2>
+        <h2 class="section-title">说明</h2>
         <dl>
           <div v-for="item in about.contacts" :key="item.label">
             <dt>{{ item.label }}</dt>
             <dd>{{ item.value }}</dd>
           </div>
         </dl>
+
         <h2 class="section-title small">在线留言</h2>
         <form @submit.prevent="submit">
-          <input v-model.trim="form.name" placeholder="您的姓名" required />
-          <textarea v-model.trim="form.message" rows="3" placeholder="留言内容（提交到 POST /api/messages）" required></textarea>
+          <input v-model.trim="form.name" placeholder="您的称呼" required />
+          <textarea v-model.trim="form.message" rows="3" placeholder="想补充的品种、产区信息（提交到 POST /api/messages）" required></textarea>
           <button class="btn" type="submit" :disabled="sending">
             {{ sending ? '提交中…' : '提交留言' }}
           </button>
@@ -109,14 +110,14 @@ async function submit() {
 .panel p {
   font-size: 14px;
   line-height: 1.95;
-  color: #33465c;
+  color: #423a4c;
 }
 .panel ul {
   margin: 14px 0 0;
   padding-left: 18px;
   font-size: 13px;
   line-height: 1.95;
-  color: #33465c;
+  color: #423a4c;
 }
 .panel dl {
   margin: 0;
@@ -135,7 +136,7 @@ async function submit() {
 }
 .panel dd {
   margin: 0;
-  color: #33465c;
+  color: #423a4c;
 }
 .section-title.small {
   font-size: 16px;

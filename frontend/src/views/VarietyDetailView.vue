@@ -1,6 +1,6 @@
 <template>
   <section class="container page">
-    <router-link class="back" to="/activities">← 返回活动列表</router-link>
+    <router-link class="back" to="/varieties">← 返回品种库</router-link>
 
     <div v-if="loading" class="state">加载中…</div>
     <div v-else-if="error" class="state error">{{ error }}</div>
@@ -8,12 +8,10 @@
     <article v-else-if="detail" class="detail card">
       <header class="detail-head">
         <span class="tag">{{ detail.category }}</span>
-        <h1>{{ detail.title }}</h1>
+        <h1>{{ detail.name }}</h1>
         <div class="meta">
-          <span>时间：{{ detail.date }}</span>
-          <span>地点：{{ detail.location }}</span>
-          <span>参加人数：{{ detail.attendees }} 人</span>
-          <span>主讲：{{ detail.speaker }}</span>
+          <span>成熟期：{{ detail.season }}</span>
+          <span>糖度：{{ detail.sugar }}</span>
         </div>
       </header>
 
@@ -22,7 +20,7 @@
       </div>
 
       <div class="points">
-        <h2 class="section-title">培训要点</h2>
+        <h2 class="section-title">栽培要点</h2>
         <ul>
           <li v-for="point in detail.points" :key="point">{{ point }}</li>
         </ul>
@@ -50,7 +48,7 @@ async function load(id) {
   error.value = ''
   detail.value = null
   try {
-    detail.value = await api.getActivity(id)
+    detail.value = await api.getVariety(id)
   } catch (e) {
     error.value = e.message
   } finally {
@@ -87,11 +85,10 @@ watch(
 .detail-head h1 {
   margin: 14px 0 16px;
   font-size: 24px;
-  line-height: 1.5;
 }
 .meta {
   display: flex;
-  gap: 20px;
+  gap: 24px;
   flex-wrap: wrap;
   font-size: 12px;
   color: var(--muted);
@@ -107,7 +104,7 @@ watch(
 .content p {
   font-size: 15px;
   line-height: 2;
-  color: #33465c;
+  color: #423a4c;
   text-indent: 2em;
 }
 .points {
@@ -122,7 +119,7 @@ watch(
   flex-direction: column;
   gap: 10px;
   font-size: 14px;
-  color: #33465c;
+  color: #423a4c;
   line-height: 1.9;
 }
 .detail-foot {

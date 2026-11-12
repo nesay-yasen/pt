@@ -8,9 +8,9 @@
     </main>
     <footer class="footer">
       <div class="footer-inner">
-        <p>尤鲁都斯巴格司法所 · 普法宣传站</p>
-        <p class="footer-sub">地址：新疆阿克苏地区新和县尤鲁都斯巴格镇　联系电话：0997-XXXXXXX</p>
-        <p class="footer-sub">本站为 Vue3 + Vite + Python 全栈示例项目，数据由本地后端接口提供。</p>
+        <p>葡萄产业信息站 · 品种 / 行情 / 栽培</p>
+        <p class="footer-sub">站内数值均为演示用示例数据，非实时行情，请以当地实际报价与技术指导为准。</p>
+        <p class="footer-sub">Vue 3 + Vite + vue-router + axios 前端，FastAPI 后端，GitHub Pages 静态部署。</p>
       </div>
     </footer>
   </div>
@@ -30,7 +30,7 @@ import NavBar from './components/NavBar.vue'
   flex: 1;
 }
 .footer {
-  background: #0f2b4d;
+  background: #1f3d29;
   color: rgba(255, 255, 255, 0.86);
   padding: 32px 24px;
   margin-top: 48px;
