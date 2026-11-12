@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 
 const routes = [
   {
@@ -40,7 +40,9 @@ const routes = [
 ]
 
 const router = createRouter({
-  history: createWebHistory(),
+  // 使用 hash 模式：既能在本地开发，也能直接在 GitHub Pages 等静态托管上工作，
+  // 无需服务端配置 history fallback。
+  history: createWebHashHistory(),
   routes,
   scrollBehavior() {
     return { top: 0 }

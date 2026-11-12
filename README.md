@@ -8,10 +8,11 @@
 | --- | --- |
 | 前端框架 | Vue 3（`<script setup>` 组合式 API） |
 | 构建工具 | Vite 6 |
-| 路由 | vue-router 4（History 模式，5 个页面 + 404） |
-| 网络请求 | axios（统一实例 + 响应拦截器） |
+| 路由 | vue-router 4（Hash 模式，5 个页面 + 404，静态托管可直接用） |
+| 网络请求 | axios（统一实例 + 响应拦截器，后端不可用时自动回退内置演示数据） |
 | 后端 | Python 3 + FastAPI + Uvicorn |
 | 接口文档 | 自动生成 OpenAPI，访问 `/docs` |
+| 自动部署 | GitHub Actions → GitHub Pages（`.github/workflows/deploy-pages.yml`） |
 
 ## 目录结构
 
@@ -60,6 +61,14 @@ npm run build      # 产物在 frontend/dist
 ```
 
 若前后端分开部署，构建前设置后端地址：`VITE_API_BASE=https://你的后端域名/api`。
+
+## 在线演示（GitHub Pages）
+
+仓库已内置 `.github/workflows/deploy-pages.yml`，推送到 `main` 后自动构建 `frontend` 并发布到 GitHub Pages。
+
+首次启用需在仓库 **Settings → Pages → Build and deployment → Source** 选择 **GitHub Actions**，之后每次推送会自动更新站点。
+
+Pages 只有静态文件、没有 Python 后端，页面会自动回退到 `src/api/mock.js` 中的内置演示数据；在本地同时启动后端时则读取真实接口。
 
 ## 说明
 
