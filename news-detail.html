@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2025葡萄市场趋势分析</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <link rel="stylesheet" href="static/css/zhuti.css">
+    <script src="static/js/zhuti.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            padding: 10px;
+        }
+        .header {
+            text-align: center;
+            padding: 10px 0;
+            border-bottom: 2px solid #8e44ad;
+            margin-bottom: 10px;
+            flex-shrink: 0;
+        }
+        .header h1 {
+            color: #8e44ad;
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        .header p {
+            color: #666;
+            font-size: 14px;
+        }
+        .chart-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 10px;
+            flex-grow: 1;
+            height: calc(100% - 100px);
+        }
+        .chart-container {
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 10px;
+            height: 100%;
+            width: 100%;
+        }
+        .chart {
+            width: 100%;
+            height: 100%;
+        }
+        .footer {
+            text-align: center;
+            padding: 10px 0;
+            color: #666;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+        @media (max-width: 768px) {
+            .chart-grid {
+                grid-template-columns: 1fr;
+                grid-template-rows: repeat(4, 1fr);
+            }
+            .header h1 {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>2025年葡萄市场趋势分析报告</h1>
+            <p>基于全国主要产区的价格数据监测</p>
+        </div>
+        
+        <div class="chart-grid">
+            <div class="chart-container">
+                <div id="priceByRegion" class="chart"></div>
+            </div>
+            <div class="chart-container">
+                <div id="priceTrend" class="chart"></div>
+            </div>
+            <div class="chart-container">
+                <div id="varietyDistribution" class="chart"></div>
+            </div>
+            <div class="chart-container">
+                <div id="priceComparison" class="chart"></div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>数据来源：惠农网 | 报告日期：2025年1月</p>
+            <p>© 2025 农产品市场分析中心 版权所有</p>
+        </div>
+    </div>
+
+    <script>
+        // 初始化图表
+        const priceByRegion = echarts.init(document.getElementById('priceByRegion'));
+        const priceTrend = echarts.init(document.getElementById('priceTrend'));
+        const varietyDistribution = echarts.init(document.getElementById('varietyDistribution'));
+        const priceComparison = echarts.init(document.getElementById('priceComparison'));
+        
+        // 按地区价格分布图
+        priceByRegion.setOption({
+            title: {
+                text: '主要产区葡萄价格分布',
+                left: 'center'
+            },
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'shadow'
+                }
+            },
+            xAxis: {
+                type: 'category',
+                data: ['河北', '山东', '陕西', '云南', '辽宁', '山西', '新疆', '其他'],
+                axisLabel: {
+                    rotate: 45
+                }
+            },
+            yAxis: {
+                type: 'value',
+                name: '价格(元/斤)'
+            },
+            series: [{
+                name: '平均价格',
+                type: 'bar',
+                data: [3.45, 3.68, 2.89, 3.92, 3.12, 3.05, 2.31, 3.24],
+                itemStyle: {
+                    color: '#9b59b6'
+                },
+                label: {
+                    show: true,
+                    position: 'top'
+                }
+            }]
+        });
+        
+        // 价格趋势图
+        priceTrend.setOption({
+            title: {
+                text: '主流品种价格趋势',
+                left: 'center'
+            },
+            tooltip: {
+                trigger: 'axis'
+            },
+            legend: {
+                data: ['阳光玫瑰', '巨峰', '夏黑', '红提', '维多利亚'],
+                top: 30
+            },
+            xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月']
+            },
+            yAxis: {
+                type: 'value',
+                name: '价格(元/斤)'
+            },
+            series: [
+                {
+                    name: '阳光玫瑰',
+                    type: 'line',
+                    data: [4.2, 4.1, 3.9, 3.8, 3.6, 3.5, 3.7, 4.0, 4.2, 4.1, 4.0, 3.9],
+                    smooth: true,
+                    symbol: 'circle',
+                    symbolSize: 8,
+                    itemStyle: {
+                        color: '#8e44ad'
+                    }
+                },
+                {
+                    name: '巨峰',
+                    type: 'line',
+                    data: [2.8, 2.7, 2.6, 2.5, 2.4, 2.3, 2.5, 2.7, 2.9, 3.0, 3.1, 3.0],
+                    smooth: true,
+                    symbol: 'circle',
+                    symbolSize: 8,
+                    itemStyle: {
+                        color: '#3498db'
+                    }
+                },
+                {
+                    name: '夏黑',
+                    type: 'line',
+                    data: [3.0, 2.9, 2.8, 2.7, 2.6, 2.5, 2.7, 2.9, 3.1, 3.2, 3.1, 3.0],
+                    smooth: true,
+                    symbol: 'circle',
+                    symbolSize: 8,
+                    itemStyle: {
+                        color: '#e74c3c'
+                    }
+                },
+                {
+                    name: '红提',
+                    type: 'line',
+                    data: [3.5, 3.4, 3.3, 3.2, 3.1, 3.0, 3.2, 3.4, 3.6, 3.7, 3.6, 3.5],
+                    smooth: true,
+                    symbol: 'circle',
+                    symbolSize: 8,
+                    itemStyle: {
+                        color: '#f39c12'
+                    }
+                },
+                {
+                    name: '维多利亚',
+                    type: 'line',
+                    data: [3.2, 3.1, 3.0, 2.9, 2.8, 2.7, 2.9, 3.1, 3.3, 3.4, 3.3, 3.2],
+                    smooth: true,
+                    symbol: 'circle',
+                    symbolSize: 8,
+                    itemStyle: {
+                        color: '#2ecc71'
+                    }
+                }
+            ]
+        });
+        
+        // 品种分布图
+        varietyDistribution.setOption({
+            title: {
+                text: '主要葡萄品种市场份额',
+                left: 'center'
+            },
+            tooltip: {
+                trigger: 'item',
+                formatter: '{a} <br/>{b}: {c} ({d}%)'
+            },
+            legend: {
+                orient: 'vertical',
+                left: 'left',
+                data: ['阳光玫瑰', '巨峰', '夏黑', '红提', '维多利亚', '克伦生', '其他']
+            },
+            series: [
+                {
+                    name: '市场份额',
+                    type: 'pie',
+                    radius: ['50%', '70%'],
+                    avoidLabelOverlap: false,
+                    itemStyle: {
+                        borderRadius: 10,
+                        borderColor: '#fff',
+                        borderWidth: 2
+                    },
+                    label: {
+                        show: false,
+                        position: 'center'
+                    },
+                    emphasis: {
+                        label: {
+                            show: true,
+                            fontSize: '18',
+                            fontWeight: 'bold'
+                        }
+                    },
+                    labelLine: {
+                        show: false
+                    },
+                    data: [
+                        { value: 28, name: '阳光玫瑰', itemStyle: { color: '#8e44ad' } },
+                        { value: 22, name: '巨峰', itemStyle: { color: '#3498db' } },
+                        { value: 15, name: '夏黑', itemStyle: { color: '#e74c3c' } },
+                        { value: 12, name: '红提', itemStyle: { color: '#f39c12' } },
+                        { value: 8, name: '维多利亚', itemStyle: { color: '#2ecc71' } },
+                        { value: 7, name: '克伦生', itemStyle: { color: '#1abc9c' } },
+                        { value: 8, name: '其他', itemStyle: { color: '#95a5a6' } }
+                    ]
+                }
+            ]
+        });
+        
+        // 价格对比图
+        priceComparison.setOption({
+            title: {
+                text: '主流品种价格对比',
+                left: 'center'
+            },
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'shadow'
+                }
+            },
+            legend: {
+                data: ['最高价', '最低价', '平均价'],
+                top: 30
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            xAxis: {
+                type: 'value',
+                name: '价格(元/斤)'
+            },
+            yAxis: {
+                type: 'category',
+                data: ['阳光玫瑰', '巨峰', '夏黑', '红提', '维多利亚']
+            },
+            series: [
+                {
+                    name: '最高价',
+                    type: 'bar',
+                    data: [5.95, 5.78, 5.52, 5.1, 5.95],
+                    itemStyle: {
+                        color: '#8e44ad'
+                    },
+                    label: {
+                        show: true,
+                        position: 'right'
+                    }
+                },
+                {
+                    name: '最低价',
+                    type: 'bar',
+                    data: [0.85, 0.94, 1.7, 1.62, 1.11],
+                    itemStyle: {
+                        color: '#3498db'
+                    },
+                    label: {
+                        show: true,
+                        position: 'right'
+                    }
+                },
+                {
+                    name: '平均价',
+                    type: 'bar',
+                    data: [3.45, 2.89, 3.12, 3.32, 3.56],
+                    itemStyle: {
+                        color: '#2ecc71'
+                    },
+                    label: {
+                        show: true,
+                        position: 'right'
+                    }
+                }
+            ]
+        });
+        
+        // 响应式调整
+        window.addEventListener('resize', function() {
+            priceByRegion.resize();
+            priceTrend.resize();
+            varietyDistribution.resize();
+            priceComparison.resize();
+        });
+    </script>
+</body>
+</html>

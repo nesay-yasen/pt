@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>全国葡萄价格分析平台</title>
+    <link rel="stylesheet" href="static/css/zhuti.css">
+    <script src="static/js/zhuti.js"></script>
+    <style>
+        :root {
+            --primary-color: #6a3093;
+            --secondary-color: #a044ff;
+            --accent-color: #28a745;
+            --text-color: #333;
+            --light-bg: #f8f9fa;
+            --white: #ffffff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--light-bg);
+        }
+        
+        .container {
+            max-width: none;
+            margin: 0 auto;
+            padding: 0 ;
+        }
+        
+        /* 导航栏样式 */
+        header {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 1rem 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            height: 60px;
+        }
+        /* 用户信息样式 */
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 18px;
+            object-fit: cover;
+            margin-right: 12px;
+            background-color: #f0f0f0;
+            border: 2px solid #eaeaea;
+            vertical-align: middle;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            /* 用户名字+头像边框 */
+            /* background-color: rgba(255,255,255,0.1); */
+            border-radius: 20px;
+            position: relative;
+            cursor: pointer;
+        }
+        .user-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: var(--white);
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 10px 0;
+            min-width: 120px;
+            display: none;
+            z-index: 1000;
+        }
+        .user-dropdown a {
+            display: block;
+            padding: 8px 15px;
+            color: var(--text-color);
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .user-dropdown a:hover {
+            background-color: var(--light-bg);
+        }
+
+        .user-info:hover .user-dropdown {
+            display: block;
+        }
+        .logout-btn {
+            color: #dc3545 !important;
+            font-weight: 500;
+        }
+
+        .logout-btn:hover {
+            background-color: rgba(220, 53, 69, 0.1) !important;
+        }
+
+        .user-name {
+            font-size: 1rem;
+            color: var(--white);
+            font-weight: 500;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 100%;
+            
+        }
+        /* 字 */
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--white);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            height: 100%;
+            margin-left: 0;
+            margin-right: auto;
+            padding-left: 20px;
+        }
+        /* 照片 */
+   
+        .logo-img {
+            width: auto;  
+            height: 60px;
+            max-height: 54px;
+            vertical-align: middle;
+        }
+        .logo-text {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--white);
+            text-decoration: none;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+            justify-content: space-between;
+            align-items: center;
+            /* width: 100% */
+            
+        }
+        
+        .nav-links li {
+            margin-left: 2rem;
+        }
+        
+        .nav-links a {
+            color: var(--white);
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--secondary-color);
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--white);
+            font-size: 1.5rem;
+            cursor: pointer;
+            height: 100%;
+            padding: 0 15px;
+        }
+        
+        /* 英雄区域样式 */
+        .hero {
+            background: linear-gradient(rgba(106, 48, 147, 0.8), rgba(106, 48, 147, 0.8)), 
+                        url('static/images/beijing.png') no-repeat center center/cover;
+            height: 80vh;
+            display: flex;
+            align-items: center;
+            text-align: center;
+            color: var(--white);
+        }
+        
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--secondary-color);
+            color: var(--white);
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: var(--primary-color);
+        }
+        
+        /* 特色区域样式 */
+        .features {
+            padding: 5rem ;
+        }
+        .features .container {
+            padding-left: 20px;
+            padding-right: 20px;
+            max-width: none;
+            margin: 0 auto; /* 保持居中 */
+        }
+        /* 或者更精确地只控制卡片网格的边距 */
+        .features-grid {
+            margin: 0 20px; /* 左右20px边距 */
+            gap: 2rem; /* 保持原有卡片间距 */
+        }
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .section-title h2 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .section-title p {
+            font-size: 1.1rem;
+            color: var(--text-color);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .feature-card {
+            background-color: var(--white);
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            color: var(--secondary-color);
+            margin-bottom: 1.5rem;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+        
+        /* 数据预览区域 */
+        .data-preview {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 5rem 0;
+            text-align: center;
+        }
+        
+        .data-stats {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin-top: 3rem;
+        }
+        
+        .stat-item {
+            margin: 1rem;
+        }
+        
+        .stat-number {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            font-size: 1.2rem;
+        }
+        
+        /* 新闻区域 */
+        .news {
+            padding: 5rem 0;
+            background-color: var(--light-bg);
+        }
+        
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .news-card {
+            background-color: var(--white);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .news-img {
+            height: 200px;
+            overflow: hidden;
+        }
+        
+        .news-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+        
+        .news-card:hover .news-img img {
+            transform: scale(1.1);
+        }
+        
+        .news-content {
+            padding: 1.5rem;
+        }
+        
+        .news-date {
+            color: var(--secondary-color);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .news-title {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+        
+        .news-excerpt {
+            margin-bottom: 1rem;
+        }
+        .news .container {
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+        .read-more {
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        /* 联系我们区域 */
+        .contact {
+            padding: 5rem 0;
+            background-color: var(--white);
+        }
+        /* 联系我们区域容器 */
+        .contact .container {
+            max-width: none;
+            margin: 0 auto;
+        }
+        /* 联系方式区域（左侧） */
+        .contact-info {
+            padding-left: 70px;  /* 左侧10px间距 */
+            margin-right: 0px;  /* 与表单间距 */
+        }
+        /* 联系表单区域（右侧） */
+        .contact-form {
+            padding-right: 100px; /* 右侧20px间距 */
+            margin-left: 0px;  /* 与联系方式间距 */
+        }
+        /* 确保两列布局不变 */
+        .contact-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* 保持两列等宽 */
+            gap: 30px; /* 两列间距 */
+        }der
+        .contact-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+        }
+        .contact-container {
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        .contact-info h3 {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+        }
+        
+        .contact-details {
+            margin-bottom: 2rem;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .contact-icon {
+            margin-right: 1rem;
+            color: var(--secondary-color);
+            font-size: 1.2rem;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .social-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: var(--primary-color);
+            color: var(--white);
+            border-radius: 50%;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+        
+        .social-link:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        .contact-form input,
+        .contact-form textarea {
+            width: 100%;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: inherit;
+        }
+        
+        .contact-form textarea {
+            height: 150px;
+            resize: vertical;
+        }
+        
+        /* 页脚样式 */
+        footer {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 3rem 0;
+            text-align: center;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-column h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .footer-links a {
+            color: var(--white);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: var(--secondary-color);
+        }
+        
+        .copyright {
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .btn-login {
+            background-color: var(--secondary-color);
+            color: var(--white);
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+            margin-left: auto; /* 将按钮推到最右侧 */
+        }
+
+        .btn-login:hover {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+        .profile-btn {
+         color: #1e2c7a !important;
+            font-weight: 500;
+        }
+
+        .profile-btn:hover {
+            background-color: rgba(220, 53, 69, 0.1) !important;
+        }
+        
+    </style>
+    
+</head>
+<body>
+    <!-- 导航栏 -->
+    <header>
+        <div class="container">
+            <nav>
+                
+                    <a href="index.html" class="logo">
+                        <img src="static/images/logo/logo白.png" alt="" class="logo-img">
+                        <span class="logo-text">葡萄价格分析</span>
+                    </a>
+                
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <ul class="nav-links" id="navLinks">
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="price-data.html">行情数据</a></li>
+                    <li><a href="market-analysis.html">市场分析</a></li>
+                    <li><a href="grape-varieties.html">葡萄品种</a></li>
+                    <li><a href="news.html">行业新闻</a></li>
+                    <li><a href="about.html">关于我们</a></li>
+                    <li id="userInfoContainer">
+                        <!-- 这里会动态显示用户信息或登录按钮 -->
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 英雄区域 -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>全国葡萄价格分析平台</h1>
+                <p>实时监测全国葡萄市场价格动态，提供精准数据分析与趋势预测，助力葡萄产业健康发展</p>
+                <a href="price-data.html" class="btn">查看实时数据</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 特色区域 -->
+    <section class="features">
+        <div class="container">
+            <div class="section-title">
+                <h2>我们的特色服务</h2>
+                <p>我们提供全面的葡萄市场数据和分析工具，帮助您做出明智的决策</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>实时价格监测</h3>
+                    <p>覆盖全国主要产区的葡萄价格数据，实时更新，让您随时掌握市场动态</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-map-marked-alt"></i>
+                    </div>
+                    <h3>区域价格对比</h3>
+                    <p>直观比较不同产区的价格差异，发现最佳采购或销售时机</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <h3>趋势预测</h3>
+                    <p>基于历史数据和市场因素，提供未来价格走势预测</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 数据预览区域 -->
+    <section class="data-preview">
+        <div class="container">
+            <div class="section-title">
+                <h2>数据概览</h2>
+                <p>我们的数据库覆盖全国各地的葡萄价格信息</p>
+            </div>
+            <div class="data-stats">
+                <div class="stat-item">
+                    <div class="stat-number">15+</div>
+                    <div class="stat-label">葡萄品种</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">30+</div>
+                    <div class="stat-label">主要产区</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">5000+</div>
+                    <div class="stat-label">数据记录</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">每日</div>
+                    <div class="stat-label">数据更新</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- 新闻区域 -->
+    <section class="news">
+        <div class="container">
+            <div class="section-title">
+                <h2>最新行业新闻</h2>
+                <p>了解葡萄产业的最新动态和发展趋势</p>
+            </div>
+            <div class="news-grid">
+                <div class="news-card">
+                    <div class="news-img">
+                        <img src="static/images/1.jpeg" alt="1">
+                    </div>
+                    <div class="news-content">
+                        <div class="news-date">2023年6月15日</div>
+                        <h3 class="news-title">2023年中国葡萄产业发展报告发布</h3>
+                        <p class="news-excerpt">报告显示，我国葡萄种植面积持续扩大，新品种推广成效显著...</p>
+                        <a href="#" class="read-more">阅读更多 →</a>
+                    </div>
+                </div>
+                <div class="news-card">
+                    <div class="news-img">
+                        <img src="static/images/2.jpeg" alt="2">
+                    </div>
+                    <div class="news-content">
+                        <div class="news-date">2023年6月10日</div>
+                        <h3 class="news-title">新疆葡萄迎来丰收季，价格稳中有升</h3>
+                        <p class="news-excerpt">今年新疆葡萄产量预计增长15%，市场需求旺盛带动价格上涨...</p>
+                        <a href="#" class="read-more">阅读更多 →</a>
+                    </div>
+                </div>
+                <div class="news-card">
+                    <div class="news-img">
+                        <img src="static/images/3.jpg" alt="3">
+                    </div>
+                    <div class="news-content">
+                        <div class="news-date">2023年6月5日</div>
+                        <h3 class="news-title">中国葡萄出口量创新高，东南亚市场增长显著</h3>
+                        <p class="news-excerpt">今年前五个月，我国葡萄出口量同比增长23%，主要销往东南亚国家...</p>
+                        <a href="#" class="read-more">阅读更多 →</a>
+                    </div>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 3rem;">
+                <a href="news.html" class="btn">查看更多新闻</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 联系我们区域 -->
+    <section class="contact">
+        <div class="container">
+            <div class="section-title">
+                <h2>联系我们</h2>
+                <p>如果您有任何问题或建议，请随时与我们联系</p>
+            </div>
+            <div class="contact-container">
+                <div class="contact-info">
+                    <h3>联系方式</h3>
+                    <div class="contact-details">
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <p>北京市海淀区中关村南大街5号</p>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-phone"></i>
+                            </div>
+                            <p>010-12345678</p>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <p>info@grapeprice.com</p>
+                        </div>
+                    </div>
+                    <h3>关注我们</h3>
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="fab fa-weixin"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-weibo"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-qq"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="contact-form">
+                    <form>
+                        <input type="text" placeholder="您的姓名" required>
+                        <input type="email" placeholder="您的邮箱" required>
+                        <input type="text" placeholder="主题">
+                        <textarea placeholder="您的留言"></textarea>
+                        <button type="submit" class="btn">发送留言</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>关于我们</h3>
+                    <p>全国葡萄价格分析平台致力于提供最全面、最准确的葡萄市场数据和分析服务，助力葡萄产业健康发展。</p>
+                </div>
+                <div class="footer-column">
+                    <h3>快速链接</h3>
+                    <ul class="footer-links">
+                        <li><a href="index.html">首页</a></li>
+                        <li><a href="price-data.html">行情数据</a></li>
+                        <li><a href="market-analysis.html">市场分析</a></li>
+                        <li><a href="grape-varieties.html">葡萄品种</a></li>
+                        <li><a href="news.html">行业新闻</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>服务</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">数据API</a></li>
+                        <li><a href="#">定制报告</a></li>
+                        <li><a href="#">咨询服务</a></li>
+                        <li><a href="#">广告合作</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 全国葡萄价格分析平台. 保留所有权利.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 处理退出登录
+        function handleLogout() {
+            // 清除sessionStorage和localStorage中的用户数据
+            sessionStorage.removeItem('currentUser');
+            localStorage.removeItem('rememberedUser');
+            
+            // 更新显示
+            updateUserInfoDisplay();
+            
+            // 阻止默认行为并返回首页
+            window.location.href = 'index.html';
+            return false;
+        }
+        // 监听退出登录链接的点击事件
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('logout-btn')) {
+                    e.preventDefault();  // 阻止默认跳转
+                    if (window.auth && window.auth.logout) {
+                        window.auth.logout();  // 使用通用退出函数
+                    } else {
+                        // 备用方案
+                        sessionStorage.removeItem('currentUser');
+                        localStorage.removeItem('rememberedUser');
+                        window.location.href = 'denglu.html';
+                    }
+                }
+            });
+        // 邮箱实时验证
+            const emailInput = document.getElementById('email');
+            if (emailInput) {
+                emailInput.addEventListener('input', function() {
+                    validateEmail(this.value);
+                });
+            }
+
+       // 更新用户信息显示
+    // 更新用户信息显示
+            function updateUserInfoDisplay() {
+                const userInfoContainer = document.getElementById('userInfoContainer');
+                const currentUserStr = sessionStorage.getItem('currentUser') || 
+                                    localStorage.getItem('rememberedUser');
+                
+                if (currentUserStr) {
+                    try {
+                        const currentUser = JSON.parse(currentUserStr);
+                        
+                        userInfoContainer.innerHTML = `
+                            <div class="user-info">
+                                <img src="${currentUser.avatar}" alt="${currentUser.username}的头像" class="user-avatar"
+                                onerror="this.src='static/images/VX/putong.png'">
+                                
+                                <span class="user-name">${currentUser.username}</span>
+                                <div class="user-dropdown">
+                                    <a href="wode.html" class="profile-btn">个人中心</a>
+                                    <a href="index.html" class="logout-btn">退出登录</a>
+                                </div>
+                            </div>
+                        `;
+                    } 
+                    catch (e) {
+                        console.error('解析用户数据失败:', e);
+                        showLoginButton();
+                    }
+                } 
+                else {
+                    showLoginButton();
+                }
+            }
+        function showLoginButton() {
+            userInfoContainer.innerHTML = `
+                <a href="denglu.html" class="btn-login">登录/注册</a>
+            `;
+        }
+        
+
+        // 页面加载时更新用户信息显示
+        updateUserInfoDisplay();
+        // 监听退出登录链接的点击事件
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('logout-btn')) {
+            handleLogout();
+        }
+    });
+    </script>
+</body>
+</html>

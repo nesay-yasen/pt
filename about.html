@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>关于我们 | 葡萄价格分析平台</title>
+    <link rel="stylesheet" href="static/css/zhuti.css">
+    <script src="static/js/zhuti.js"></script>
+    <script src="static/js/auth-check.js"></script>
+    <style>
+        :root {
+            --primary-color: #6a3093;
+            --secondary-color: #a044ff;
+            --accent-color: #28a745;
+            --text-color: #333;
+            --light-bg: #f8f9fa;
+            --white: #ffffff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--light-bg);
+        }
+        
+        .container {
+            max-width: none;
+            margin: 0 auto;
+            padding: 0;
+        }
+        
+        /* 导航栏样式 */
+        header {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 1rem 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            height: 60px;
+        }
+        /* 用户信息样式 */
+        .user-info {
+            display: flex;
+            align-items: center;
+            margin-left: 2rem;
+            padding: 8px 12px;
+            /* background-color: rgba(255,255,255,0.1); */
+            border-radius: 20px;
+            position: relative;
+            cursor: pointer;
+            
+        }
+        .user-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: var(--white);
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 10px 0;
+            min-width: 120px;
+            display: none;
+            z-index: 1000;
+        }
+
+        .user-dropdown a {
+            display: block;
+            padding: 8px 15px;
+            color: var(--text-color);
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .user-dropdown a:hover {
+            background-color: var(--light-bg);
+        }
+
+        .user-info:hover .user-dropdown {
+            display: block;
+        }
+
+        .logout-btn {
+            color: #dc3545 !important;
+            font-weight: 500;
+        }
+
+        .logout-btn:hover {
+            background-color: rgba(220, 53, 69, 0.1) !important;
+        }
+
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 8px;
+            border: 2px solid var(--white);
+            vertical-align: middle;
+        }
+
+        .user-name {
+            font-size: 1rem;
+            color: var(--white);
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 100%;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--white);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            height: 100%;
+            margin-left: 0;
+            margin-right: auto;
+            padding-left: 20px;
+        }
+        
+        .logo-img {
+            width: auto;  
+            height: 60px;
+            max-height: 54px;
+            vertical-align: middle;
+        }
+        
+        .logo-text {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--white);
+            text-decoration: none;
+        }
+        .btn-login {
+            background-color: var(--secondary-color);
+            color: var(--white);
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+            margin-left: auto; /* 将按钮推到最右侧 */
+        }
+
+        .btn-login:hover {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .nav-links li {
+            margin-left: 2rem;
+        }
+        
+        .nav-links a {
+            color: var(--white);
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--secondary-color);
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--white);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        /* 页面标题 */
+        .page-header {
+            background: linear-gradient(rgba(106, 48, 147, 0.8), rgba(106, 48, 147, 0.8)), 
+                        url('static/images/beijing.png') no-repeat center center/cover;
+            padding: 5rem 0;
+            text-align: center;
+            color: var(--white);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 200px;
+        }
+        
+        .page-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        /* 关于我们内容 */
+        .about-section {
+            padding: 5rem 0;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .about-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        .about-content {
+            padding: 0 10px;
+        }
+        
+        .about-content h2 {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .about-content p {
+            margin-bottom: 1rem;
+        }
+        
+        /* 头像样式 */
+        .img-touxiang {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 4px solid #6a3093;
+            object-fit: cover;
+            display: block;
+            margin: 0 auto 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            background-color: #f8f9fa;
+            overflow: hidden;
+        }
+        
+        .img-touxiang img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .profile-name {
+            color: #6a3093;
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .profile-title {
+            color: #a044ff;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+        }
+        
+        .profile-desc {
+            color: #333;
+            font-size: 1rem;
+            line-height: 2;
+            margin-bottom: 25px;
+        }
+        
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 22px;
+        }
+        
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #6a3093;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .social-icon:hover {
+            background-color: #a044ff;
+            transform: translateY(-3px);
+        }
+        
+        .mission-vision {
+            margin-top: 4rem;
+            text-align: center;
+            padding: 0 20px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        .mission-vision-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .mission-card, .vision-card {
+            background-color: var(--white);
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .mission-card h3, .vision-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        
+        /* 团队介绍 */
+        .team-section {
+            padding: 5rem 0;
+            background-color: var(--white);
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .section-title h2 {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        
+        .team-member {
+            text-align: center;
+        }
+        
+        /* 页脚 */
+        footer {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 3rem 0;
+            text-align: center;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-column h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .footer-links a {
+            color: var(--white);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: var(--secondary-color);
+        }
+        
+        .copyright {
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .profile-btn {
+            color: #1e2c7a !important;
+            font-weight: 500;
+        }
+
+        .profile-btn:hover {
+            background-color: rgba(220, 53, 69, 0.1) !important;
+        }
+        
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <header>
+        <div class="container">
+            <nav>
+                <a href="index.html" class="logo">
+                    <img src="static/images/logo/logo白.png" alt="" class="logo-img">
+                    <span class="logo-text">葡萄价格分析</span>
+                </a>
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <ul class="nav-links" id="navLinks">
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="price-data.html">行情数据</a></li>
+                    <li><a href="market-analysis.html">市场分析</a></li>
+                    <li><a href="grape-varieties.html">葡萄品种</a></li>
+                    <li><a href="news.html">行业新闻</a></li>
+                    <li><a href="about.html">关于我们</a></li>
+                    <li id="userInfoContainer">
+                        <!-- 这里会动态显示用户信息或登录按钮 -->
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 页面标题 -->
+    <section class="page-header">
+        <div class="container">
+            <h1>关于我们</h1>
+        </div>
+    </section>
+
+    <!-- 关于我们内容 -->
+    <section class="about-section">
+        <div class="container" class="center">
+            <div class="about-container">
+                <div class="about-content">
+                    <h2>我们的故事</h2>
+                    <p>全国葡萄价格分析平台的诞生源于2015年新疆吐鲁番的一场田间对话。创始人张明博士在调研时发现，当地农户的优质无核白葡萄收购价仅为3.2元/公斤，而同期北京新发地批发市场的同品种售价高达18元/公斤。这种惊人的价格落差背后，是信息壁垒导致的产业链价值分配失衡。带着"用数据打破信息鸿沟"的使命，我们联合中国农科院、北京邮电大学大数据实验室，搭建了首个葡萄产业价格监测系统。经过8年发展，现已建成覆盖全国28个省级行政区、136个核心产区的数据网络，每日采集处理数据量超过15万条，价格预测准确率稳定在92%以上。</p>
+                    <p>技术创新始终是我们的核心驱动力。2018年自主研发的"葡萄价格时空分析模型"，首次将气象数据、物流成本与市场供需纳入价格预测体系，使云南宾川产区的早熟葡萄实现溢价23%。2021年上线的区块链溯源系统，通过记录从种植到销售的全链条数据，帮助山东平度大棚葡萄获得欧盟出口认证。目前平台已获得12项农业大数据专利，与农业农村部信息中心联合发布的《中国葡萄产业价格指数》成为行业风向标。2023年，我们的AI预测模型在智利葡萄进口季提前45天预警价格波动，为国内经销商节省成本超2.7亿元。</p>
+                    <p>我们深知数据的价值在于服务产业。平台独创的"三级服务体系"包括：面向种植户的"最佳上市期预测"工具，平均帮助用户增收17%；为批发商定制的"产区价格预警系统"，降低采购成本12%；给零售终端提供的"动态定价建议"，提升毛利率8个百分点。在山西太谷，我们通过分析7年价格数据，指导农户改种阳光玫瑰品种，使区域产值从每亩1.2万元跃升至4.8万元。这种"数据赋能产业"的案例已在全国复制136个，累计创造经济效益超30亿元。</p>
+                    <p>站在新起点，我们正推进"智慧葡萄园2030计划"：通过物联网设备实时监测2000个示范基地的种植数据，构建从生产到消费的全产业链数字孪孪生系统。与浙江大学合作的"葡萄品质-价格关联模型"即将投入应用，将实现按糖度、果粒大小等品质指标自动生成分级定价。未来三年，我们将拓展东南亚产区数据覆盖，开发多语言版本服务"一带一路"沿线国家。正如联合国粮农组织专家评价："这个平台用数据重新定义了农产品价值分配逻辑"——而这正是我们持续创新的根本动力。</p>
+                </div>
+            </div>
+            
+            <div class="mission-vision">
+                <h2>使命与愿景</h2>
+                <div class="mission-vision-grid">
+                    <div class="mission-card">
+                        <h3>我们的使命</h3>
+                        <p>通过提供准确、及时的市场价格信息和分析工具，帮助葡萄产业链上的各个环节提高决策效率，降低市场风险，促进葡萄产业健康发展。</p>
+                    </div>
+                    <div class="vision-card">
+                        <h3>我们的愿景</h3>
+                        <p>成为全国最权威的葡萄市场数据平台，连接葡萄产业链上的所有参与者，构建透明、高效的市场环境，推动中国葡萄产业走向世界。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 团队介绍 -->
+    <section class="team-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>我们的团队</h2>
+                <p>专业、热情、致力于为您提供最好的服务</p>
+            </div>
+            <div class="team-grid">
+                <div class="team-member">
+                    <div class="img-touxiang">
+                        <img src="static/images/about/about-zm.jpeg" alt="">
+                        
+                    </div>
+                    <div class="team-info">
+                        <h1 class="profile-name">张明</h1>
+                        <p class="profile-title">创始人 & CEO</p>
+                        <p class="profile-desc">农业经济学博士，15年农产品市场分析经验，精通价格预测模型构建</p>
+                        <div class="social-icons">
+                            <a href="#" class="social-icon"><i class="fab fa-weixin"></i></a>
+                            <a href="#" class="social-icon"><i class="fab fa-linkedin"></i></a>
+                            <a href="#" class="social-icon"><i class="fas fa-envelope"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="team-member">
+                    <div class="img-touxiang">
+                        <img src="static/images/about/about-lihua.png" alt="">
+                        
+                    </div>
+                    <div class="team-info">
+                        <h1 class="profile-name">李华</h1>
+                        <p class="profile-title">首席数据分析师</p>
+                        <p class="profile-desc">统计学硕士，10年大数据分析经验，擅长机器学习算法应用</p>
+                        <div class="social-icons">
+                            <a href="#" class="social-icon"><i class="fab fa-weixin"></i></a>
+                            <a href="#" class="social-icon"><i class="fab fa-linkedin"></i></a>
+                            <a href="#" class="social-icon"><i class="fas fa-envelope"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="team-member">
+                    <div class="img-touxiang">
+                        <img src="static/images/about/about-3.png" alt="">
+                        
+                    </div>
+                    <div class="team-info">
+                        <h1 class="profile-name">赵强</h1>
+                        <p class="profile-title">技术总监</p>
+                        <p class="profile-desc">计算机科学硕士，8年全栈开发经验，主导区块链溯源系统开发</p>
+                        <div class="social-icons">
+                            <a href="#" class="social-icon"><i class="fab fa-weixin"></i></a>
+                            <a href="#" class="social-icon"><i class="fab fa-linkedin"></i></a>
+                            <a href="#" class="social-icon"><i class="fas fa-envelope"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="team-member">
+                    <div class="img-touxiang">
+                        <img src="static/images/about/about-4.png" alt="">
+                        
+                    </div>
+                    <div class="team-info">
+                        <h1 class="profile-name">王芳</h1>
+                        <p class="profile-title">农业技术总监</p>
+                        <p class="profile-desc">葡萄栽培学博士，12年种植研究经验，培育3个地理标志新品种</p>
+                        <div class="social-icons">
+                            <a href="#" class="social-icon"><i class="fab fa-weixin"></i></a>
+                            <a href="#" class="social-icon"><i class="fab fa-linkedin"></i></a>
+                            <a href="#" class="social-icon"><i class="fas fa-envelope"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>关于我们</h3>
+                    <p>全国葡萄价格分析平台致力于提供最全面、最准确的葡萄市场数据和分析服务，助力葡萄产业健康发展。</p>
+                </div>
+                <div class="footer-column">
+                    <h3>快速链接</h3>
+                    <ul class="footer-links">
+                        <li><a href="index.html">首页</a></li>
+                        <li><a href="price-data.html">行情数据</a></li>
+                        <li><a href="market-analysis.html">市场分析</a></li>
+                        <li><a href="grape-varieties.html">葡萄品种</a></li>
+                        <li><a href="news.html">行业新闻</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3><a href="contact.html" style="color: inherit; text-decoration: none;">联系我们</a></h3>
+                    <ul class="footer-links">
+                        <li><i class="fas fa-map-marker-alt"></i> 北京市海淀区中关村南大街5号</li>
+                        <li><i class="fas fa-phone"></i> 010-12345678</li>
+                        <li><i class="fas fa-envelope"></i> info@grapeprice.com</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 全国葡萄价格分析平台. 保留所有权利.</p>
+            </div>
+        </div>
+    </footer>
+    <script>
+         // 处理退出登录
+        function handleLogout() {
+            // 清除sessionStorage和localStorage中的用户数据
+            sessionStorage.removeItem('currentUser');
+            localStorage.removeItem('rememberedUser');
+            
+            // 更新显示
+            updateUserInfoDisplay();
+            
+            // 阻止默认行为并返回首页
+            window.location.href = 'index.html';
+            return false;
+        }
+
+       // 更新用户信息显示
+       function updateUserInfoDisplay() {
+                const userInfoContainer = document.getElementById('userInfoContainer');
+                const currentUserStr = sessionStorage.getItem('currentUser') || 
+                                    localStorage.getItem('rememberedUser');
+                
+                if (currentUserStr) {
+                    try {
+                        const currentUser = JSON.parse(currentUserStr);
+                        
+                        userInfoContainer.innerHTML = `
+                            <div class="user-info">
+                                <img src="${currentUser.avatar}" alt="${currentUser.username}的头像" class="user-avatar"
+                                onerror="this.src='static/images/VX/putong.png'">
+                                
+                                <span class="user-name">${currentUser.username}</span>
+                                <div class="user-dropdown">
+                                    <a href="wode.html" class="profile-btn">个人中心</a>
+                                    <a href="index.html" class="logout-btn">退出登录</a>
+                                </div>
+                            </div>
+                        `;
+                    } 
+                    catch (e) {
+                        console.error('解析用户数据失败:', e);
+                        showLoginButton();
+                    }
+                } 
+                else {
+                    showLoginButton();
+                }
+            }
+        function showLoginButton() {
+            userInfoContainer.innerHTML = `
+                <a href="denglu.html" class="btn-login">登录/注册</a>
+            `;
+        }
+
+
+        // 页面加载时更新用户信息显示
+        updateUserInfoDisplay();
+        // 监听退出登录链接的点击事件
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('logout-btn')) {
+            handleLogout();
+        }
+    });
+    </script>
+
+    
+</body>
+</html>

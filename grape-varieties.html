@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>葡萄品种大全 | 葡萄价格分析平台</title>
+    <link rel="stylesheet" href="static/css/zhuti.css">
+    <script src="static/js/zhuti.js"></script>
+    <script src="static/js/auth-check.js"></script>
+    <style>
+        :root {
+            --primary-color: #6a3093;
+            --secondary-color: #a044ff;
+            --accent-color: #28a745;
+            --text-color: #333;
+            --light-bg: #f8f9fa;
+            --white: #ffffff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--light-bg);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* 导航栏样式 */
+        header {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 1rem 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            height: 60px;
+        }
+        /* 用户信息样式 */
+        .user-info {
+            display: flex;
+            align-items: center;
+            margin-left: 2rem;
+            position: relative;
+            cursor: pointer;
+        }
+        .user-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: var(--white);
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 10px 0;
+            min-width: 120px;
+            display: none;
+            z-index: 1000;
+        }
+
+        .user-dropdown a {
+            display: block;
+            padding: 8px 15px;
+            color: var(--text-color);
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .user-dropdown a:hover {
+            background-color: var(--light-bg);
+        }
+
+        .user-info:hover .user-dropdown {
+            display: block;
+        }
+
+        .logout-btn {
+            color: #dc3545 !important;
+            font-weight: 500;
+        }
+
+        .logout-btn:hover {
+            background-color: rgba(220, 53, 69, 0.1) !important;
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 8px;
+            border: 2px solid var(--white);
+        }
+
+        .user-name {
+            font-size: 1rem;
+            color: var(--white);
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 100%;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--white);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            height: 100%;
+            margin-left: 0;
+            margin-right: auto;
+            padding-left: 20px;
+        }
+        /* 照片 */
+   
+        .logo-img {
+            width: auto;  
+            height: 60px;
+            max-height: 54px;
+            vertical-align: middle;
+        }
+        .logo-text {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--white);
+            text-decoration: none;
+        }
+        .btn-login {
+            background-color: var(--secondary-color);
+            color: var(--white);
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+            margin-left: auto; /* 将按钮推到最右侧 */
+        }
+
+        .btn-login:hover {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .nav-links li {
+            margin-left: 2rem;
+        }
+        
+        .nav-links a {
+            color: var(--white);
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--secondary-color);
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--white);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        /* 页面标题 */
+        .page-header {
+            background: linear-gradient(rgba(106, 48, 147, 0.8), rgba(106, 48, 147, 0.8)), 
+                        url('static/images/beijing.png') no-repeat center center/cover;
+            padding: 5rem 0;
+            text-align: center;
+            color: var(--white);
+        }
+        
+        .page-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .breadcrumb {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+        }
+        
+        .breadcrumb li {
+            margin: 0 0.5rem;
+        }
+        
+        
+        .breadcrumb a {
+            color: var(--white);
+            text-decoration: none;
+        }
+        
+        /* 葡萄品种区域 */
+        .varieties-section {
+            padding: 3rem 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .section-title h2 {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto 3rem;
+            position: relative;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            border: 1px solid #ddd;
+            border-radius: 50px;
+            font-size: 1rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .search-icon {
+            position: absolute;
+            right: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--secondary-color);
+        }
+        
+        .varieties-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+        
+        .variety-card {
+            background-color: var(--white);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .variety-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+        .variety-card[style*="display: none"] {
+            opacity: 0;
+            transform: scale(0.9);
+            height: 0;
+            margin: 0;
+            padding: 0;
+            border: none;
+        }
+        .variety-card[style*="display: block"] {
+            opacity: 1;
+            transform: scale(1);
+            height: auto;
+        }
+                .variety-img {
+            height: 200px;
+            overflow: hidden;
+        }
+        
+        .variety-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+        
+        .variety-card:hover .variety-img img {
+            transform: scale(1.05);
+        }
+        
+        .variety-content {
+            padding: 1.5rem;
+        }
+        
+        .variety-name {
+            font-size: 1.3rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .variety-origin {
+            color: var(--secondary-color);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        
+        .variety-desc {
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+            color: #666;
+        }
+        
+        .variety-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            color: #777;
+        }
+        
+        /* 品种分类导航 */
+        .variety-categories {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+        
+        .category-btn {
+            padding: 0.5rem 1.5rem;
+            background-color: var(--white);
+            border: 1px solid #ddd;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .category-btn:hover, .category-btn.active {
+            background-color: var(--primary-color);
+            color: var(--white);
+            border-color: var(--primary-color);
+        }
+        
+        /* 页脚 */
+        footer {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 3rem 0;
+            text-align: center;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-column h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .footer-links a {
+            color: var(--white);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: var(--secondary-color);
+        }
+        
+        .copyright {
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+ 
+        /* 分页样式 */
+        .pagination-container {
+            margin-top: 3rem;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+        .pagination {
+            display: flex;
+            list-style: none;
+            gap: 0.5rem;
+            margin: 0 auto; /* 额外的居中保障 */
+            padding: 0; /* 移除默认内边距 */
+        }
+        .pagination li {
+            margin: 0;
+        }
+        .pagination a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--white);
+            color: var(--primary-color);
+            border: 1px solid #ddd;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        .pagination a:hover {
+            background-color: var(--primary-color);
+            color: var(--white);
+            border-color: var(--primary-color);
+        }
+        .pagination .active a {
+            background-color: var(--primary-color);
+            color: var(--white);
+            border-color: var(--primary-color);
+        }
+
+        .pagination .disabled a {
+            color: #ccc;
+            pointer-events: none;
+        }
+        .profile-btn {
+            color: #1e2c7a !important;
+            font-weight: 500;
+        }
+
+        .profile-btn:hover {
+            background-color: rgba(220, 53, 69, 0.1) !important;
+        }
+        
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <header>
+        <div class="container">
+            <nav>
+                <a href="index.html" class="logo">
+                    <img src="static/images/logo/logo白.png" alt="" class="logo-img">
+                    <span class="logo-text">葡萄价格分析</span>
+                </a>
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <ul class="nav-links" id="navLinks">
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="price-data.html">行情数据</a></li>
+                    <li><a href="market-analysis.html">市场分析</a></li>
+                    <li><a href="grape-varieties.html" class="active">葡萄品种</a></li>
+                    <li><a href="news.html">行业新闻</a></li>
+                    <li><a href="about.html">关于我们</a></li>
+                    <li id="userInfoContainer">
+                        <!-- 这里会动态显示用户信息或登录按钮 -->
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 页面标题 -->
+    <section class="page-header">
+        <div class="container">
+            <h1>葡萄品种大全</h1>
+            <!-- <ul class="breadcrumb">
+                <li><a href="index.html">首页</a></li>
+                <li>葡萄品种</li>
+            </ul> -->
+        </div>
+    </section>
+
+    <!-- 葡萄品种区域 -->
+    <section class="varieties-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>探索丰富的葡萄品种</h2>
+                <p>了解不同葡萄品种的特点、产地和市场表现</p>
+            </div>
+            
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="搜索葡萄品种...">
+                <i class="fas fa-search search-icon"></i>
+            </div>
+            
+            <div class="variety-categories">
+                <button class="category-btn active" data-type="all">全部</button>
+                <button class="category-btn" data-type="1">鲜食品种</button>
+                <button class="category-btn" data-type="2">酿酒品种</button>
+                <button class="category-btn" data-type="3">国内品种</button>
+                <button class="category-btn" data-type="4">进口品种</button>
+                <button class="category-btn" data-type="5">早熟品种</button>
+                <button class="category-btn" data-type="6">晚熟品种</button>
+            </div>
+            
+            <div class="varieties-grid">               
+                <!-- 葡萄品种卡片1 -->
+                <div class="variety-card" data-type="1" >
+                    <div class="variety-img">
+                        <img src="static/images/grapes/巨峰葡萄.jpeg" alt="">
+                        
+                    </div>
+                    <div class="variety-content">
+                        <h3 class="variety-name">巨峰葡萄</h3>
+                        <div class="variety-origin">原产地：日本</div>
+                        <p class="variety-desc">巨峰葡萄是鲜食葡萄中的优良品种，果粒大，紫黑色，皮厚肉软，味甜多汁，有草莓香味。</p>
+                        <div class="variety-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">¥15-25</div>
+                                <div class="stat-label">市场价格</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">7-8月</div>
+                                <div class="stat-label">成熟期</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 葡萄品种卡片2 -->
+                <div class="variety-card" data-type="1">
+                    <div class="variety-img">
+                        <img src="static/images/grapes/夏黑葡萄.jpeg" alt="">
+                        
+                    </div>
+                    <div class="variety-content">
+                        <h3 class="variety-name">夏黑葡萄</h3>
+                        <div class="variety-origin">原产地：日本</div>
+                        <p class="variety-desc">夏黑葡萄无核，高糖低酸，香味浓郁，肉质细脆，硬度适中，是早熟葡萄中的优质品种。</p>
+                        <div class="variety-stats">
+                            <div class="stat-value">¥20-30</div>
+                            <div class="stat-label">市场价格</div>
+                            <div class="stat-value">6-7月</div>
+                            <div class="stat-label">成熟期</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 葡萄品种卡片3 -->
+                <div class="variety-card" data-type="5">
+                    <div class="variety-img">
+                        <img src="static/images/grapes/阳光玫瑰.jpeg" alt="">
+                        
+                    </div>
+                    <div class="variety-content">
+                        <h3 class="variety-name">阳光玫瑰</h3>
+                        <div class="variety-origin">原产地：日本</div>
+                        <p class="variety-desc">阳光玫瑰葡萄果粒大，黄绿色，肉质脆硬，有玫瑰香味，糖度高，品质极佳，是高端葡萄品种。</p>
+                        <div class="variety-stats">
+                            <div class="stat-value">¥30-50</div>
+                            <div class="stat-label">市场价格</div>
+                            <div class="stat-value">8-9月</div>
+                            <div class="stat-label">成熟期</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 葡萄品种卡片4 -->
+                <div class="variety-card" data-type="6">
+                    <div class="variety-img">
+                        <img src="static/images/grapes/红地球.jpeg" alt="">
+                        
+                    </div>
+                    <div class="variety-content">
+                        <h3 class="variety-name">红地球</h3>
+                        <div class="variety-origin">原产地：美国</div>
+                        <p class="variety-desc">红地球葡萄果粒大，红色，果肉硬脆，味甜，耐贮运，是重要的鲜食葡萄品种。</p>
+                        <div class="variety-stats">
+                            <div class="stat-value">¥18-28</div>
+                            <div class="stat-label">市场价格</div>
+                            <div class="stat-value">8-9月</div>
+                            <div class="stat-label">成熟期</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 葡萄品种卡片5 -->
+                <div class="variety-card" data-type="4">
+                    <div class="variety-img">
+                        <img src="static/images/grapes/赤霞珠.jpeg" alt="">
+                    </div>
+                    <div class="variety-content">
+                        <h3 class="variety-name">赤霞珠</h3>
+                        <div class="variety-origin">原产地：法国</div>
+                        <p class="variety-desc">赤霞珠是世界上最著名的酿酒葡萄品种之一，果粒小，皮厚，单宁含量高，适合酿造陈年型红葡萄酒。</p>
+                        <div class="variety-stats">
+                            <div class="stat-value">¥8-15</div>
+                            <div class="stat-label">市场价格</div>
+                            <div class="stat-value">9-10月</div>
+                            <div class="stat-label">成熟期</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 葡萄品种卡片6 -->
+                <div class="variety-card" data-type="3">
+                    <div class="variety-img">
+                       <img src="static/images/grapes/玫瑰香.jpeg" alt=""> 
+                    </div>
+                    <div class="variety-content">
+                        <h3 class="variety-name">玫瑰香</h3>
+                        <div class="variety-origin">原产地：中国</div>
+                        <p class="variety-desc">玫瑰香葡萄果粒中等大小，紫红色，皮薄肉软，有浓郁的玫瑰香味，是鲜食和酿酒兼用品种。</p>
+                        <div class="variety-stats">
+                            <div class="stat-value">¥12-20</div>
+                            <div class="stat-label">市场价格</div>
+                            <div class="stat-value">8-9月</div>
+                            <div class="stat-label">成熟期</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 葡萄品种卡片7 -->
+                <div class="variety-card" data-type="2">
+                    <div class="variety-img">
+                        <img src="static/images/grapes/维多利亚.jpeg" alt="">
+                    </div>
+                    <div class="variety-content">
+                        <h3 class="variety-name">维多利亚</h3>
+                        <div class="variety-origin">原产地：罗马尼亚</div>
+                        <p class="variety-desc">维多利亚葡萄果粒大，黄绿色，肉质脆，味甜，丰产性好，是优良的早熟鲜食葡萄品种。</p>
+                        <div class="variety-stats">
+                            <div class="stat-value">¥15-22</div>
+                            <div class="stat-label">市场价格</div>
+                            <div class="stat-value">7-8月</div>
+                            <div class="stat-label">成熟期</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 葡萄品种卡片8 -->
+                <div class="variety-card" data-type="5">
+                    <div class="variety-img">
+                        <img src="static/images/grapes/美人指.jpeg" alt="">
+                    </div>
+                    <div class="variety-content">
+                        <h3 class="variety-name">美人指</h3>
+                        <div class="variety-origin">原产地：日本</div>
+                        <p class="variety-desc">美人指葡萄果粒细长，紫红色，外观独特，肉质脆硬，味甜，是高端礼品葡萄品种。</p>
+                        <div class="variety-stats">
+                            <div class="stat-value">¥40-60</div>
+                            <div class="stat-label">市场价格</div>
+                            <div class="stat-value">8-9月</div>
+                            <div class="stat-label">成熟期</div>
+                        </div>
+                    </div>
+                </div>
+            
+
+                <!-- 丹魄葡萄 -->
+                <div class="variety-card" data-type="4">
+                    <div class="variety-img">
+                        <img src="static/images/grapes/丹魄葡萄.jpeg" alt="">
+                    </div>
+                    <div class="variety-content">
+                        <h3 class="variety-name">丹魄葡萄</h3>
+                        <div class="variety-origin">原产地：西班牙</div>
+                        <p class="variety-desc">西班牙标志性红葡萄品种，果粒小紫黑色，酿造的酒带有红莓、皮革和香料风味。</p>
+                        <div class="variety-stats">                   
+                                <div class="stat-value">¥18-35</div>
+                                <div class="stat-label">市场价格</div>
+                                <div class="stat-value">8-9月</div>
+                                <div class="stat-label">成熟期</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 黑皮诺葡萄 -->
+                <div class="variety-card" data-type="1">
+                    <div class="variety-img">
+                        <img src="static/images/grapes/黑皮诺葡萄.jpeg" alt="">
+                    </div>
+                    <div class="variety-content">
+                        <h3 class="variety-name">黑皮诺葡萄</h3>
+                        <div class="variety-origin">原产地：法国</div>
+                        <p class="variety-desc">娇贵的红葡萄品种，果粒小皮薄，酿造的酒细腻优雅，带有樱桃和草莓香气。</p>
+                        <div class="variety-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">¥30-60</div>
+                                <div class="stat-label">市场价格</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">8-9月</div>
+                                <div class="stat-label">成熟期</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 雷司令葡萄 -->
+                <div class="variety-card" data-type="5">
+                    <div class="variety-img">
+                        <img src="static/images/grapes/雷司令葡萄.jpeg" alt="">
+                    </div>
+                    <div class="variety-content">
+                        <h3 class="variety-name">雷司令葡萄</h3>
+                        <div class="variety-origin">原产地：德国</div>
+                        <p class="variety-desc">优质白葡萄品种，果粒小黄绿色，酿造的酒酸度高，带有柠檬、蜂蜜和矿物风味。</p>
+                        <div class="variety-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">¥25-50</div>
+                                <div class="stat-label">市场价格</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">10-11月</div>
+                                <div class="stat-label">成熟期</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 马尔贝克葡萄 -->
+                <div class="variety-card" data-type="3">
+                    <div class="variety-img">
+                        <img src="static/images/grapes/马尔贝克葡萄.jpeg" alt="">
+                    </div>
+                    <div class="variety-content">
+                        <h3 class="variety-name">马尔贝克葡萄</h3>
+                        <div class="variety-origin">原产地：法国</div>
+                        <p class="variety-desc">阿根廷代表性红葡萄品种，果粒小紫黑色，酿造的酒颜色深浓，带有黑莓和李子风味。</p>
+                        <div class="variety-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">¥15-30</div>
+                                <div class="stat-label">市场价格</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">3-4月</div>
+                                <div class="stat-label">成熟期</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 梅洛葡萄 -->
+                <div class="variety-card" data-type="6">
+                    <div class="variety-img">
+                        <img src="static/images/grapes/梅洛葡萄.jpeg" alt="">
+                    </div>
+                    <div class="variety-content">
+                        <h3 class="variety-name">梅洛葡萄</h3>
+                        <div class="variety-origin">原产地：法国</div>
+                        <p class="variety-desc">波尔多主要红葡萄品种，果粒中等蓝黑色，酿造的酒柔和圆润，带有红樱桃和巧克力风味。</p>
+                        <div class="variety-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">¥18-35</div>
+                                <div class="stat-label">市场价格</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">9-10月</div>
+                                <div class="stat-label">成熟期</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 西拉葡萄 -->
+                <div class="variety-card" data-type="2">
+                    <div class="variety-img">
+                        <img src="static/images/grapes/西拉葡萄.jpeg" alt="">
+                    </div>
+                    <div class="variety-content">
+                        <h3 class="variety-name">西拉葡萄</h3>
+                        <div class="variety-origin">原产地：法国</div>
+                        <p class="variety-desc">澳大利亚代表性红葡萄品种，果粒小紫黑色，酿造的酒浓郁饱满，带有黑胡椒和黑莓风味。</p>
+                        <div class="variety-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">¥20-45</div>
+                                <div class="stat-label">市场价格</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">2-3月</div>
+                                <div class="stat-label">成熟期</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 霞多丽葡萄 -->
+                <div class="variety-card" data-type="1">
+                    <div class="variety-img">
+                        <img src="static/images/grapes/霞多丽葡萄.jpeg" alt="">
+                    </div>
+                    <div class="variety-content">
+                        <h3 class="variety-name">霞多丽葡萄</h3>
+                        <div class="variety-origin">原产地：法国</div>
+                        <p class="variety-desc">全球最受欢迎的白葡萄品种，果粒中等黄绿色，酿造的酒风格多样，从清爽到浓郁橡木风味。</p>
+                        <div class="variety-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">¥25-50</div>
+                                <div class="stat-label">市场价格</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">8-9月</div>
+                                <div class="stat-label">成熟期</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
+        
+                <!-- 仙粉黛葡萄 -->
+                <div class="variety-card" data-type="5">
+                    <div class="variety-img">
+                        <img src="static/images/grapes/仙粉黛葡萄.jpeg" alt="">
+                    </div>
+                    <div class="variety-content">
+                        <h3 class="variety-name">仙粉黛葡萄</h3>
+                        <div class="variety-origin">原产地：克罗地亚</div>
+                        <p class="variety-desc">加州特色红葡萄品种，果粒中等紫黑色，酿造的酒果香浓郁，酒精度高，带有莓果和香料风味。</p>
+                        <div class="variety-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">¥15-30</div>
+                                <div class="stat-label">市场价格</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">9-10月</div>
+                                <div class="stat-label">成熟期</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 长相思葡萄 -->
+                <div class="variety-card" data-type="3">
+                    <div class="variety-img">
+                        <img src="static/images/grapes/长相思葡萄.jpeg" alt="">
+                    </div>
+                    <div class="variety-content">
+                        <h3 class="variety-name">长相思葡萄</h3>
+                        <div class="variety-origin">原产地：法国</div>
+                        <p class="variety-desc">芳香型白葡萄品种，果粒小黄绿色，酿造的酒酸度清爽，带有青草、柑橘和热带水果香气。</p>
+                        <div class="variety-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">¥20-40</div>
+                                <div class="stat-label">市场价格</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">8-9月</div>
+                                <div class="stat-label">成熟期</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+         <div class="pagination-container">
+            <ul class="pagination" id="pagination">
+                <!-- 分页按钮将通过JavaScript动态生成 -->
+            </ul>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>关于我们</h3>
+                    <p>全国葡萄价格分析平台致力于提供最全面、最准确的葡萄市场数据和分析服务，助力葡萄产业健康发展。</p>
+                </div>
+                <div class="footer-column">
+                    <h3>快速链接</h3>
+                    <ul class="footer-links">
+                        <li><a href="index.html">首页</a></li>
+                        <li><a href="price-data.html">行情数据</a></li>
+                        <li><a href="market-analysis.html">市场分析</a></li>
+                        <li><a href="grape-varieties.html">葡萄品种</a></li>
+                        <li><a href="news.html">行业新闻</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>服务</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">数据API</a></li>
+                        <li><a href="#">定制报告</a></li>
+                        <li><a href="#">咨询服务</a></li>
+                        <li><a href="#">广告合作</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 全国葡萄价格分析平台. 保留所有权利.</p>
+            </div>
+        </div>
+    </footer>
+
+   <script>
+    // 页面加载时初始化
+    document.addEventListener('DOMContentLoaded', function() {
+        updateUserInfoDisplay();
+        initMobileMenu();
+        initVarietyCards();
+    });
+
+    // 移动端菜单切换
+    function initMobileMenu() {
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navLinks = document.getElementById('navLinks');
+        if (mobileMenuBtn && navLinks) {
+            mobileMenuBtn.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+            });
+        }
+    }
+
+    // 葡萄品种卡片相关功能
+    function initVarietyCards() {
+        // 初始化变量
+        const varietyCards = document.querySelectorAll('.variety-card');
+        const paginationContainer = document.getElementById('pagination');
+        const searchInput = document.querySelector('.search-input');
+        const categoryBtns = document.querySelectorAll('.category-btn');
+        
+        let currentPage = 1;
+        let currentFilter = 'all';
+        const cardsPerPage = 9;
+
+        // 初始化卡片显示和分页
+        updateCardsDisplay();
+
+        // 搜索功能
+        searchInput.addEventListener('input', handleSearch);
+
+        // 分类筛选功能
+        categoryBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                currentFilter = this.dataset.type;
+                categoryBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                currentPage = 1;
+                updateCardsDisplay();
+            });
+        });
+
+        // 搜索处理函数
+        function handleSearch() {
+            currentPage = 1;
+            updateCardsDisplay();
+        }
+
+        // 获取当前筛选条件下的卡片
+        function getFilteredCards() {
+            const searchTerm = searchInput.value.trim().toLowerCase();
+            
+            return Array.from(varietyCards).filter(card => {
+                // 检查分类筛选
+                const typeMatch = currentFilter === 'all' || card.dataset.type === currentFilter;
+                
+                // 如果没有搜索词，只返回分类匹配的卡片
+                if (searchTerm === '') {
+                    return typeMatch;
+                }
+                
+                // 如果有搜索词，检查分类和搜索内容
+                if (typeMatch) {
+                    const name = card.querySelector('.variety-name').textContent.toLowerCase();
+                    const desc = card.querySelector('.variety-desc').textContent.toLowerCase();
+                    const origin = card.querySelector('.variety-origin').textContent.toLowerCase();
+                    
+                    return name.includes(searchTerm) || desc.includes(searchTerm) || origin.includes(searchTerm);
+                }
+                
+                return false;
+            });
+        }
+
+        // 更新卡片显示
+        function updateCardsDisplay() {
+            const filteredCards = getFilteredCards();
+            const totalPages = Math.ceil(filteredCards.length / cardsPerPage);
+            const startIndex = (currentPage - 1) * cardsPerPage;
+            const endIndex = startIndex + cardsPerPage;
+            
+            // 先隐藏所有卡片
+            varietyCards.forEach(card => {
+                card.style.display = 'none';
+            });
+            
+            // 显示当前页的卡片
+            filteredCards.slice(startIndex, endIndex).forEach(card => {
+                card.style.display = 'block';
+            });
+            
+            // 更新分页
+            updatePagination(totalPages);
+        }
+
+        // 更新分页
+        function updatePagination(totalPages) {
+            paginationContainer.innerHTML = '';
+            
+            if (totalPages <= 1) return;
+            
+            // 添加上一页按钮
+            const prevBtn = document.createElement('li');
+            prevBtn.className = currentPage === 1 ? 'disabled' : '';
+            prevBtn.innerHTML = `<a href="#" aria-label="Previous" data-page="prev">&laquo;</a>`;
+            prevBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (currentPage > 1) {
+                    currentPage--;
+                    updateCardsDisplay();
+                }
+            });
+            paginationContainer.appendChild(prevBtn);
+            
+            // 添加页码按钮
+            const maxVisiblePages = 5;
+            let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+            
+            if (endPage - startPage + 1 < maxVisiblePages) {
+                startPage = Math.max(1, endPage - maxVisiblePages + 1);
+            }
+            
+            if (startPage > 1) {
+                addPageButton(1);
+                if (startPage > 2) {
+                    addEllipsis();
+                }
+            }
+            
+            for (let i = startPage; i <= endPage; i++) {
+                addPageButton(i);
+            }
+            
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) {
+                    addEllipsis();
+                }
+                addPageButton(totalPages);
+            }
+            
+            // 添加下一页按钮
+            const nextBtn = document.createElement('li');
+            nextBtn.className = currentPage === totalPages ? 'disabled' : '';
+            nextBtn.innerHTML = `<a href="#" aria-label="Next" data-page="next">&raquo;</a>`;
+            nextBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    updateCardsDisplay();
+                }
+            });
+            paginationContainer.appendChild(nextBtn);
+            
+            // 添加页码按钮的辅助函数
+            function addPageButton(page) {
+                const pageItem = document.createElement('li');
+                pageItem.className = page === currentPage ? 'active' : '';
+                pageItem.innerHTML = `<a href="#" data-page="${page}">${page}</a>`;
+                pageItem.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    currentPage = page;
+                    updateCardsDisplay();
+                });
+                paginationContainer.appendChild(pageItem);
+            }
+            
+            // 添加省略号的辅助函数
+            function addEllipsis() {
+                const ellipsis = document.createElement('li');
+                ellipsis.innerHTML = '<span>...</span>';
+                paginationContainer.appendChild(ellipsis);
+            }
+        }
+    }
+
+    // 用户相关功能
+    function updateUserInfoDisplay() {
+        const userInfoContainer = document.getElementById('userInfoContainer');
+        const currentUserStr = sessionStorage.getItem('currentUser') || 
+                            localStorage.getItem('rememberedUser');
+        
+        if (currentUserStr) {
+            try {
+                const currentUser = JSON.parse(currentUserStr);
+                
+                userInfoContainer.innerHTML = `
+                    <div class="user-info">
+                        <img src="${currentUser.avatar || 'static/images/VX/putong.png'}" 
+                            alt="用户头像" class="user-avatar"
+                            onerror="this.src='static/images/VX/putong.png'">
+                        <span class="user-name">${currentUser.username || '用户'}</span>
+                        <div class="user-dropdown">
+                            <a href="wode.html" class="profile-btn">个人中心</a>
+                            <a href="index.html" class="logout-btn">退出登录</a>
+                        </div>
+                    </div>
+                `;
+            } catch (e) {
+                console.error('解析用户数据失败:', e);
+                showLoginButton();
+            }
+        } else {
+            showLoginButton();
+        }
+    }
+
+    function showLoginButton() {
+        const userInfoContainer = document.getElementById('userInfoContainer');
+        if (userInfoContainer) {
+            userInfoContainer.innerHTML = `
+                <a href="denglu.html" class="btn-login">登录/注册</a>
+            `;
+        }
+    }
+
+    function handleLogout() {
+        sessionStorage.removeItem('currentUser');
+        localStorage.removeItem('rememberedUser');
+        window.location.href = 'index.html';
+    }
+
+    // 监听退出登录链接的点击事件
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('logout-btn')) {
+            e.preventDefault();
+            handleLogout();
+        }
+    });
+</script>
+</body>
+</html>

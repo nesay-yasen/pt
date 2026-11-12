@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>葡萄价格分析平台 - 安全设置</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="static/css/zhuti.css">
+    <script src="static/js/zhuti.js"></script>
+    <style>
+        :root {
+            --primary-color: #6a3093;
+            --secondary-color: #a044ff;
+            --accent-color: #28a745;
+            --text-color: #333;
+            --light-gray: #f5f5f5;
+            --medium-gray: #e0e0e0;
+            --dark-gray: #757575;
+            --white: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background-color: var(--light-gray);
+            color: var(--text-color);
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: none;
+            margin: 0 auto;
+            padding: 0;
+        }
+
+        /* 导航栏样式 */
+        header {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 1rem 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            height: 60px;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 100%;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--white);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            height: 100%;
+        }
+
+        .logo-img {
+            width: auto;
+            height: 60px;
+            max-height: 54px;
+            vertical-align: middle;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-links li {
+            margin-left: 2rem;
+        }
+
+        .nav-links a {
+            color: var(--white);
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--secondary-color);
+        }
+
+        /* 用户信息样式 */
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 18px;
+            object-fit: cover;
+            margin-right: 12px;
+            background-color: #f0f0f0;
+            border: 2px solid #eaeaea;
+            vertical-align: middle;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            border-radius: 20px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .user-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: var(--white);
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 10px 0;
+            min-width: 120px;
+            display: none;
+            z-index: 1000;
+        }
+
+        .user-dropdown a {
+            display: block;
+            padding: 8px 15px;
+            color: var(--text-color);
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .user-dropdown a:hover {
+            background-color: var(--light-gray);
+        }
+
+        .user-info:hover .user-dropdown {
+            display: block;
+        }
+
+        .logout-btn {
+            color: #dc3545 !important;
+            font-weight: 500;
+        }
+
+        .logout-btn:hover {
+            background-color: rgba(220, 53, 69, 0.1) !important;
+        }
+
+        .user-name {
+            font-size: 1rem;
+            color: var(--white);
+            font-weight: 500;
+        }
+
+        /* 安全设置内容样式 */
+        .security-container {
+            display: flex;
+            margin-top: 30px;
+            gap: 30px;
+        }
+
+        .profile-sidebar {
+            width: 250px;
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .security-main {
+            flex: 1;
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .security-menu {
+            list-style: none;
+        }
+
+        .security-menu li {
+            margin-bottom: 10px;
+        }
+
+        .security-menu a {
+            display: block;
+            padding: 10px 15px;
+            color: var(--text-color);
+            text-decoration: none;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+
+        .security-menu a:hover, .security-menu a.active {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+
+        .security-menu a i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .security-section {
+            margin-bottom: 30px;
+        }
+
+        .security-section h3 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        /* 安全设置项样式 */
+        .security-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .security-info {
+            flex: 1;
+        }
+
+        .security-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .security-description {
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+        }
+
+        .security-status {
+            color: var(--accent-color);
+            font-weight: 500;
+        }
+
+        .security-status.inactive {
+            color: var(--dark-gray);
+        }
+
+        .security-actions {
+            margin-left: 20px;
+        }
+
+        .btn-security {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-modify {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+
+        .btn-enable {
+            background-color: var(--accent-color);
+            color: var(--white);
+        }
+
+        .btn-disable {
+            background-color: #dc3545;
+            color: var(--white);
+        }
+
+        .btn-security:hover {
+            opacity: 0.9;
+        }
+
+        /* 密码修改表单样式 */
+        .password-form {
+            max-width: 500px;
+            margin-top: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--medium-gray);
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .form-actions {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .security-container {
+                flex-direction: column;
+            }
+            
+            .profile-sidebar {
+                width: 100%;
+                margin-bottom: 20px;
+            }
+            
+            .security-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .security-actions {
+                margin-left: 0;
+                margin-top: 10px;
+                align-self: flex-end;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <header>
+        <div class="container">
+            <nav>
+                <a href="index.html" class="logo">
+                    <img src="static/images/logo/logo白.png" alt="" class="logo-img">
+                    <span class="logo-text">葡萄价格分析</span>
+                </a>
+                <ul class="nav-links" id="navLinks">
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="price-data.html">行情数据</a></li>
+                    <li><a href="market-analysis.html">市场分析</a></li>
+                    <li><a href="grape-varieties.html">葡萄品种</a></li>
+                    <li><a href="news.html">行业新闻</a></li>
+                    <li><a href="about.html">关于我们</a></li>
+                    <li id="userInfoContainer">
+                        <!-- 这里会动态显示用户信息或登录按钮 -->
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 安全设置内容 -->
+    <div class="container">
+        <div class="security-container">
+            <!-- 侧边栏菜单 -->
+            <div class="profile-sidebar">
+                <ul class="security-menu">
+                    <li><a href="wode.html" ><i class="fas fa-user"></i> 个人资料</a></li>
+                    <li><a href="analysis.html"><i class="fas fa-chart-line"></i> 数据分析</a></li>
+                    <li><a href="notification.html"><i class="fas fa-bell"></i> 消息通知</a></li>
+                    <li><a href="security.html" class="active"><i class="fas fa-lock"></i> 安全设置</a></li>
+                    <li><a href="favorites.html"><i class="fas fa-heart"></i> 收藏内容</a></li>
+                    <li><a href="history.html"><i class="fas fa-history"></i> 浏览历史</a></li>
+                    <li><a href="settings.html"><i class="fas fa-cog"></i> 系统设置</a></li>
+                </ul>
+            </div>
+
+            <!-- 主内容区 -->
+            <div class="security-main">
+                <div class="security-section">
+                    <h3><i class="fas fa-lock"></i> 安全设置</h3>
+                    
+                    <!-- 账户密码 -->
+                    <div class="security-item">
+                        <div class="security-info">
+                            <div class="security-title">账户密码</div>
+                            <div class="security-description">定期更改密码可以提高账户安全性</div>
+                        </div>
+                        <div class="security-status">已设置</div>
+                        <div class="security-actions">
+                            <button class="btn-security btn-modify">修改</button>
+                        </div>
+                    </div>
+                    
+                    <!-- 手机验证 -->
+                    <div class="security-item">
+                        <div class="security-info">
+                            <div class="security-title">手机验证</div>
+                            <div class="security-description">已绑定手机：138****1234</div>
+                        </div>
+                        <div class="security-status">已绑定</div>
+                        <div class="security-actions">
+                            <button class="btn-security btn-modify">更换</button>
+                        </div>
+                    </div>
+                    
+                    <!-- 邮箱验证 -->
+                    <div class="security-item">
+                        <div class="security-info">
+                            <div class="security-title">邮箱验证</div>
+                            <div class="security-description">已绑定邮箱：admin@example.com</div>
+                        </div>
+                        <div class="security-status">已验证</div>
+                        <div class="security-actions">
+                            <button class="btn-security btn-modify">更换</button>
+                        </div>
+                    </div>
+                    
+                    <!-- 二次验证 -->
+                    <div class="security-item">
+                        <div class="security-info">
+                            <div class="security-title">二次验证</div>
+                            <div class="security-description">登录时需通过手机验证码验证身份</div>
+                        </div>
+                        <div class="security-status">已启用</div>
+                        <div class="security-actions">
+                            <button class="btn-security btn-disable">禁用</button>
+                        </div>
+                    </div>
+                    
+                    <!-- 登录设备管理 -->
+                    <div class="security-item">
+                        <div class="security-info">
+                            <div class="security-title">登录设备管理</div>
+                            <div class="security-description">当前有3台设备登录过您的账户</div>
+                        </div>
+                        <div class="security-status">3台设备</div>
+                        <div class="security-actions">
+                            <button class="btn-security btn-modify">管理</button>
+                        </div>
+                    </div>
+                    
+                    <!-- 登录历史记录 -->
+                    <div class="security-item">
+                        <div class="security-info">
+                            <div class="security-title">登录历史记录</div>
+                            <div class="security-description">查看最近30天的登录记录</div>
+                        </div>
+                        <div class="security-status">最近登录：今天 10:30</div>
+                        <div class="security-actions">
+                            <button class="btn-security btn-modify">查看</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 密码修改表单 (默认隐藏) -->
+                <div class="security-section" id="passwordForm" style="display: none;">
+                    <h4><i class="fas fa-key"></i> 修改密码</h4>
+                    <form class="password-form">
+                        <div class="form-group">
+                            <label for="currentPassword">当前密码</label>
+                            <input type="password" id="currentPassword" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="newPassword">新密码</label>
+                            <input type="password" id="newPassword" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmPassword">确认新密码</label>
+                            <input type="password" id="confirmPassword" class="form-control" required>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn-security btn-modify">确认修改</button>
+                            <button type="button" id="cancelPassword" class="btn-security btn-disable">取消</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 页面加载时获取并显示用户信息
+        document.addEventListener('DOMContentLoaded', function() {
+            updateUserInfoDisplay();
+            setupSecurityActions();
+        });
+        
+        // 更新用户信息显示
+        function updateUserInfoDisplay() {
+            const userInfoContainer = document.getElementById('userInfoContainer');
+            const currentUserStr = sessionStorage.getItem('currentUser') || 
+                                localStorage.getItem('rememberedUser');
+            
+            if (currentUserStr) {
+                try {
+                    const currentUser = JSON.parse(currentUserStr);
+                    
+                    userInfoContainer.innerHTML = `
+                        <div class="user-info">
+                            <img src="${currentUser.avatar || 'static/images/VX/admin.png'}" 
+                                class="user-avatar" 
+                                alt="用户头像"
+                                onerror="this.src='static/images/VX/admin.png'">
+                            <span class="user-name">${currentUser.username || 'admin'}</span>
+                            <div class="user-dropdown">
+                                <a href="wode.html" class="profile-btn">个人中心</a>
+                                <a href="index.html" class="logout-btn">退出登录</a>
+                            </div>
+                        </div>
+                    `;
+                } catch (e) {
+                    console.error('解析用户数据失败:', e);
+                    showLoginButton();
+                }
+            } else {
+                showLoginButton();
+            }
+        }
+
+        // 显示登录按钮
+        function showLoginButton() {
+            const userInfoContainer = document.getElementById('userInfoContainer');
+            userInfoContainer.innerHTML = `
+                <a href="denglu.html" class="btn-login">登录/注册</a>
+            `;
+        }
+
+        // 处理退出登录
+        function handleLogout() {
+            sessionStorage.removeItem('currentUser');
+            localStorage.removeItem('rememberedUser');
+            window.location.href = 'index.html';
+        }
+
+        // 设置安全设置操作
+        function setupSecurityActions() {
+            // 修改密码按钮
+            document.querySelector('.security-item:nth-child(1) .btn-modify').addEventListener('click', function() {
+                document.getElementById('passwordForm').style.display = 'block';
+            });
+            
+            // 取消修改密码
+            document.getElementById('cancelPassword').addEventListener('click', function() {
+                document.getElementById('passwordForm').style.display = 'none';
+            });
+            
+            // 密码表单提交
+            document.querySelector('.password-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                alert('密码修改成功！');
+                document.getElementById('passwordForm').style.display = 'none';
+                this.reset();
+            });
+            
+            // 其他按钮的点击事件
+            document.querySelectorAll('.btn-modify:not(.security-item:nth-child(1) .btn-modify)').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    alert('功能开发中，敬请期待！');
+                });
+            });
+            
+            // 禁用二次验证
+            document.querySelector('.btn-disable').addEventListener('click', function() {
+                if(confirm('确定要禁用二次验证吗？这会降低账户安全性。')) {
+                    const item = this.closest('.security-item');
+                    item.querySelector('.security-status').textContent = '未启用';
+                    item.querySelector('.security-status').classList.add('inactive');
+                    this.textContent = '启用';
+                    this.classList.remove('btn-disable');
+                    this.classList.add('btn-enable');
+                }
+            });
+            
+            // 启用二次验证（动态生成的按钮）
+            document.addEventListener('click', function(e) {
+                if(e.target.classList.contains('btn-enable')) {
+                    const item = e.target.closest('.security-item');
+                    item.querySelector('.security-status').textContent = '已启用';
+                    item.querySelector('.security-status').classList.remove('inactive');
+                    e.target.textContent = '禁用';
+                    e.target.classList.remove('btn-enable');
+                    e.target.classList.add('btn-disable');
+                }
+            });
+        }
+        
+        // 监听退出登录按钮点击事件
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('logout-btn')) {
+                handleLogout();
+            }
+        });
+    </script>
+</body>
+</html>

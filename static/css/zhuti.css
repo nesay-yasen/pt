@@ -1,0 +1,56 @@
+
+.theme-purple {
+    --primary-color: #6a3093;
+    --secondary-color: #a044ff;
+}
+.theme-blue {
+    --primary-color: #2a52be;
+    --secondary-color: #5d8bf4;
+}
+.theme-green {
+    --primary-color: #2e8b57;
+    --secondary-color: #5cdb95;
+}
+.theme-dark {
+    --primary-color: #343a40;       /* 主色调保持深灰色 */
+    --secondary-color: #ffffff;     /* 次色调白色 */
+    --text-color: #ffffff;          /* 普通文本白色 */
+    --light-gray: #585f68;          /* 浅灰色背景 */
+    --white: #1b1d11;               /* 反色白色 */
+    
+    /* 新增导航栏专用变量 */
+    --nav-text-color: #e70000;      /* 导航栏文字颜色 */
+    --nav-hover-color: #281f31;     /* 导航栏悬停颜色（紫色） */
+}
+/* 新增主题 */
+.theme-red {
+    --primary-color: #c62828;
+    --secondary-color: #ff5252;
+}
+.theme-orange {
+    --primary-color: #e65100;
+    --secondary-color: #ff9800;
+}
+.theme-pink {
+    --primary-color: #ad1457;
+    --secondary-color: #ff4081;
+}
+.theme-teal {
+    --primary-color: #00897b;
+    --secondary-color: #4db6ac;
+}
+
+    /* 字体大小 */
+    .font-small {
+        font-size: 14px;
+    }
+    .font-medium {
+        font-size: 16px;
+    }
+    .font-large {
+        font-size: 18px;
+    }
+    .nav-links a.active {
+    color: var(--nav-hover-color);
+    font-weight: bold;
+}

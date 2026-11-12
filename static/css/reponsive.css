@@ -1,0 +1,153 @@
+/* 小屏幕设备 (手机, 576px及以下) */
+@media (max-width: 576px) {
+    /* 调整基础字号 */
+    html {
+        font-size: 14px;
+    }
+    
+    /* 调整容器内边距 */
+    .container {
+        padding: 0 15px;
+    }
+    
+    /* 导航栏调整为垂直布局 */
+    .nav-links {
+        flex-direction: column;
+        width: 100%;
+        padding: 1rem;
+    }
+    
+    .nav-links li {
+        margin: 0.5rem 0;
+    }
+    
+    /* 隐藏桌面菜单按钮，显示移动菜单按钮 */
+    .mobile-menu-btn {
+        display: block;
+    }
+    
+    /* 调整页眉大小 */
+    .page-header h1 {
+        font-size: 1.8rem;
+    }
+    
+    /* 调整卡片布局 */
+    .stats-container {
+        grid-template-columns: 1fr;
+    }
+    
+    /* 调整表格控制区域 */
+    .table-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .filter-section {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    /* 调整表格单元格内边距 */
+    .data-table th,
+    .data-table td {
+        padding: 0.5rem;
+        font-size: 0.85rem;
+    }
+    
+    /* 调整分页按钮大小 */
+    .pagination button {
+        min-width: 30px;
+        padding: 0.3rem;
+    }
+}
+
+/* 中等屏幕设备 (平板, 768px及以下) */
+@media (max-width: 768px) {
+    /* 调整基础字号 */
+    html {
+        font-size: 15px;
+    }
+    
+    /* 调整网格布局列数 */
+    .stats-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    /* 调整表格控制区域 */
+    .table-controls {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    /* 调整表单元素宽度 */
+    .table-search {
+        width: 100%;
+    }
+    
+    /* 调整图表容器高度 */
+    .chart-container {
+        height: 300px;
+    }
+}
+
+/* 大屏幕设备 (小桌面, 992px及以下) */
+@media (max-width: 992px) {
+    /* 调整网格布局列数 */
+    .stats-container {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    /* 调整导航栏间距 */
+    .nav-links li {
+        margin-left: 1rem;
+    }
+}
+
+/* 超大屏幕设备 (大桌面, 1200px及以上) */
+@media (min-width: 1200px) {
+    /* 增加容器最大宽度 */
+    .container {
+        max-width: 1300px;
+    }
+}
+
+/* 打印样式 */
+@media print {
+    /* 隐藏不必要元素 */
+    nav, .table-controls, .pagination, footer {
+        display: none !important;
+    }
+    
+    /* 调整表格样式 */
+    .data-table {
+        width: 100%;
+        border: 1px solid #000;
+    }
+    
+    .data-table th,
+    .data-table td {
+        padding: 0.5rem;
+        border: 1px solid #000;
+    }
+    
+    /* 确保背景为白色 */
+    body {
+        background-color: white;
+        color: black;
+    }
+    
+    /* 移除阴影和动画 */
+    .card, .data-table-container {
+        box-shadow: none;
+    }
+    
+    /* 避免分页时切断表格行 */
+    table {
+        page-break-inside: auto;
+    }
+    
+    tr {
+        page-break-inside: avoid;
+        page-break-after: auto;
+    }
+}

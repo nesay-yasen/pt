@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>葡萄价格分析平台 - 浏览历史</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="static/js/zhuti.js" ></script>
+    <link rel="stylesheet" href="static/css/zhuti.css">
+
+    <style>
+        :root {
+            --primary-color: #6a3093;
+            --secondary-color: #a044ff;
+            --accent-color: #28a745;
+            --text-color: #333;
+            --light-gray: #f5f5f5;
+            --medium-gray: #e0e0e0;
+            --dark-gray: #757575;
+            --white: #ffffff;
+        }
+        /* 蓝色主题 */
+            [data-theme="blue"] {
+            --primary-color: #2a52be;
+            --secondary-color: #5d8bf4;
+            }
+
+            /* 绿色主题 */
+            [data-theme="green"] {
+            --primary-color: #2e8b57;
+            --secondary-color: #5cdb95;
+            }
+
+            /* 深色主题 */
+            [data-theme="dark"] {
+            --primary-color: #343a40;
+            --secondary-color: #495057;
+            --text-color: #f8f9fa;
+            --bg-color: #212529;
+            --card-bg: #343a40;
+            }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background-color: var(--light-gray);
+            color: var(--text-color);
+            line-height: 1.5;
+        }
+        .card {
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            }
+
+        .container {
+            max-width: none;
+            margin: 0 auto;
+            padding: 0;
+        }
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            }
+
+        /* 导航栏样式 */
+        header {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 1rem 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            height: 60px;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 100%;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--white);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            height: 100%;
+        }
+
+        .logo-img {
+            width: auto;
+            height: 60px;
+            max-height: 54px;
+            vertical-align: middle;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-links li {
+            margin-left: 2rem;
+        }
+
+        .nav-links a {
+            color: var(--white);
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--secondary-color);
+        }
+
+        /* 用户信息样式 */
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 18px;
+            object-fit: cover;
+            margin-right: 12px;
+            background-color: #f0f0f0;
+            border: 2px solid #eaeaea;
+            vertical-align: middle;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            border-radius: 20px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .user-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: var(--white);
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 10px 0;
+            min-width: 120px;
+            display: none;
+            z-index: 1000;
+        }
+
+        .user-dropdown a {
+            display: block;
+            padding: 8px 15px;
+            color: var(--text-color);
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .user-dropdown a:hover {
+            background-color: var(--light-gray);
+        }
+
+        .user-info:hover .user-dropdown {
+            display: block;
+        }
+
+        .logout-btn {
+            color: #dc3545 !important;
+            font-weight: 500;
+        }
+
+        .logout-btn:hover {
+            background-color: rgba(220, 53, 69, 0.1) !important;
+        }
+
+        .user-name {
+            font-size: 1rem;
+            color: var(--white);
+            font-weight: 500;
+        }
+
+        /* 浏览历史内容样式 */
+        .history-container {
+            display: flex;
+            margin-top: 30px;
+            gap: 30px;
+        }
+
+        .profile-sidebar {
+            width: 250px;
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .history-main {
+            flex: 1;
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .history-menu {
+            list-style: none;
+        }
+
+        .history-menu li {
+            margin-bottom: 10px;
+        }
+
+        .history-menu a {
+            display: block;
+            padding: 10px 15px;
+            color: var(--text-color);
+            text-decoration: none;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+
+        .history-menu a:hover, .history-menu a.active {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+
+        .history-menu a i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .history-section {
+            margin-bottom: 30px;
+        }
+
+        .history-section h3 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        /* 历史记录项样式 */
+        .history-list {
+            list-style: none;
+        }
+
+        .history-item {
+            padding: 15px;
+            border-bottom: 1px solid var(--medium-gray);
+            display: flex;
+            align-items: center;
+            transition: background-color 0.3s;
+        }
+
+        .history-item:hover {
+            background-color: var(--light-gray);
+        }
+
+        .history-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--light-gray);
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .history-content {
+            flex: 1;
+        }
+
+        .history-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .history-time {
+            color: var(--dark-gray);
+            font-size: 0.85rem;
+        }
+
+        .history-text {
+            color: var(--dark-gray);
+            font-size: 0.95rem;
+        }
+
+        .history-actions {
+            margin-left: 15px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-history {
+            padding: 5px 10px;
+            font-size: 0.85rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-view {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+
+        .btn-delete {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .btn-history:hover {
+            opacity: 0.9;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .history-container {
+                flex-direction: column;
+            }
+            
+            .profile-sidebar {
+                width: 100%;
+                margin-bottom: 20px;
+            }
+            
+            .history-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .history-actions {
+                margin-left: 0;
+                margin-top: 10px;
+                align-self: flex-end;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <header>
+        <div class="theme-purple font-medium container">
+            <nav>
+                <a href="index.html" class="logo">
+                    <img src="static/images/logo/logo白.png" alt="" class="logo-img">
+                    <span class="logo-text">葡萄价格分析</span>
+                </a>
+                <ul class="nav-links" id="navLinks">
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="price-data.html">行情数据</a></li>
+                    <li><a href="market-analysis.html">市场分析</a></li>
+                    <li><a href="grape-varieties.html">葡萄品种</a></li>
+                    <li><a href="news.html">行业新闻</a></li>
+                    <li><a href="about.html">关于我们</a></li>
+                    <li id="userInfoContainer">
+                        <!-- 这里会动态显示用户信息或登录按钮 -->
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 浏览历史内容 -->
+    <div class="container">
+        <div class="history-container">
+            <!-- 侧边栏菜单 -->
+            <div class="profile-sidebar">
+                <ul class="history-menu">
+                    <li><a href="wode.html"><i class="fas fa-user"></i> 个人资料</a></li>
+                    <li><a href="analysis.html"><i class="fas fa-chart-line"></i> 数据分析</a></li>
+                    <li><a href="notification.html"><i class="fas fa-bell"></i> 消息通知</a></li>
+                    <li><a href="security.html"><i class="fas fa-lock"></i> 安全设置</a></li>
+                    <li><a href="favorites.html"><i class="fas fa-heart"></i> 收藏内容</a></li>
+                    <li><a href="history.html" class="active"><i class="fas fa-history"></i> 浏览历史</a></li>
+                    <li><a href="settings.html"><i class="fas fa-cog"></i> 系统设置</a></li>
+                </ul>
+            </div>
+
+            <!-- 主内容区 -->
+            <div class="history-main">
+                <div class="history-section">
+                    <h3><i class="fas fa-history"></i> 浏览历史</h3>
+                    
+                    <!-- 历史记录列表 -->
+                    <ul class="history-list">
+                        <!-- 历史记录项1 -->
+<li class="history-item">
+    <div class="history-icon">
+        <i class="fas fa-chart-line"></i>
+    </div>
+    <div class="history-content">
+        <div class="history-title">
+            <span>2023年葡萄价格趋势分析</span>
+            <span class="history-time">2023-06-20 08:15</span>
+        </div>
+        <div class="history-text">
+            全国主要产区葡萄价格月度变化趋势，包含赤霞珠、霞多丽等品种的市场行情...
+        </div>
+    </div>
+    <div class="history-actions">
+        <button class="btn-history btn-view">查看</button>
+        <button class="btn-history btn-delete">删除</button>
+    </div>
+</li>
+
+<!-- 历史记录项2 -->
+<li class="history-item">
+    <div class="history-icon">
+        <i class="fas fa-map-marked-alt"></i>
+    </div>
+    <div class="history-content">
+        <div class="history-title">
+            <span>华东地区葡萄价格地图</span>
+            <span class="history-time">2023-06-19 14:30</span>
+        </div>
+        <div class="history-text">
+            华东六省一市葡萄产地价格热力图，可视化展示区域价格差异和供应情况...
+        </div>
+    </div>
+    <div class="history-actions">
+        <button class="btn-history btn-view">查看</button>
+        <button class="btn-history btn-delete">删除</button>
+    </div>
+</li>
+
+<!-- 历史记录项3 -->
+<li class="history-item">
+    <div class="history-icon">
+        <i class="fas fa-wine-glass-alt"></i>
+    </div>
+    <div class="history-content">
+        <div class="history-title">
+            <span>酿酒葡萄品质评估报告</span>
+            <span class="history-time">2023-06-18 11:20</span>
+        </div>
+        <div class="history-text">
+            基于糖酸比和酚类物质含量的酿酒葡萄品质分级标准及市场价格关联分析...
+        </div>
+    </div>
+    <div class="history-actions">
+        <button class="btn-history btn-view">查看</button>
+        <button class="btn-history btn-delete">删除</button>
+    </div>
+</li>
+
+<!-- 历史记录项4 -->
+<li class="history-item">
+    <div class="history-icon">
+        <i class="fas fa-truck"></i>
+    </div>
+    <div class="history-content">
+        <div class="history-title">
+            <span>葡萄物流成本分析</span>
+            <span class="history-time">2023-06-17 16:45</span>
+        </div>
+        <div class="history-text">
+            不同运输方式对葡萄终端价格的影响，包含冷链物流和普通运输的成本对比...
+        </div>
+    </div>
+    <div class="history-actions">
+        <button class="btn-history btn-view">查看</button>
+        <button class="btn-history btn-delete">删除</button>
+    </div>
+</li>
+
+<!-- 历史记录项5 -->
+<li class="history-item">
+    <div class="history-icon">
+        <i class="fas fa-shopping-cart"></i>
+    </div>
+    <div class="history-content">
+        <div class="history-title">
+            <span>批发市场葡萄价格日报</span>
+            <span class="history-time">2023-06-16 09:30</span>
+        </div>
+        <div class="history-text">
+            北京新发地、上海江桥等主要批发市场当日葡萄交易价格及成交量统计...
+        </div>
+    </div>
+    <div class="history-actions">
+        <button class="btn-history btn-view">查看</button>
+        <button class="btn-history btn-delete">删除</button>
+    </div>
+</li>
+
+<!-- 历史记录项6 -->
+<li class="history-item">
+    <div class="history-icon">
+        <i class="fas fa-calendar-alt"></i>
+    </div>
+    <div class="history-content">
+        <div class="history-title">
+            <span>葡萄季节性价格波动研究</span>
+            <span class="history-time">2023-06-15 13:10</span>
+        </div>
+        <div class="history-text">
+            近五年葡萄价格季节性变化规律分析，预测下半年价格走势和采购时机...
+        </div>
+    </div>
+    <div class="history-actions">
+        <button class="btn-history btn-view">查看</button>
+        <button class="btn-history btn-delete">删除</button>
+    </div>
+</li>
+
+<!-- 历史记录项7 -->
+<li class="history-item">
+    <div class="history-icon">
+        <i class="fas fa-leaf"></i>
+    </div>
+    <div class="history-content">
+        <div class="history-title">
+            <span>有机葡萄溢价分析</span>
+            <span class="history-time">2023-06-14 10:25</span>
+        </div>
+        <div class="history-text">
+            有机认证葡萄与传统种植葡萄的市场价格差异及消费者接受度调查报告...
+        </div>
+    </div>
+    <div class="history-actions">
+        <button class="btn-history btn-view">查看</button>
+        <button class="btn-history btn-delete">删除</button>
+    </div>
+</li>
+
+<!-- 历史记录项8 -->
+<li class="history-item">
+    <div class="history-icon">
+        <i class="fas fa-flask"></i>
+    </div>
+    <div class="history-content">
+        <div class="history-title">
+            <span>葡萄采后处理成本核算</span>
+            <span class="history-time">2023-06-13 15:40</span>
+        </div>
+        <div class="history-text">
+            分级、包装、预冷等采后处理工序对葡萄最终销售价格的影响分析...
+        </div>
+    </div>
+    <div class="history-actions">
+        <button class="btn-history btn-view">查看</button>
+        <button class="btn-history btn-delete">删除</button>
+    </div>
+</li>
+
+<!-- 历史记录项9 -->
+<li class="history-item">
+    <div class="history-icon">
+        <i class="fas fa-globe-asia"></i>
+    </div>
+    <div class="history-content">
+        <div class="history-title">
+            <span>进口葡萄关税影响分析</span>
+            <span class="history-time">2023-06-12 11:15</span>
+        </div>
+        <div class="history-text">
+            最新关税政策对智利、澳大利亚进口葡萄终端市场价格的影响评估...
+        </div>
+    </div>
+    <div class="history-actions">
+        <button class="btn-history btn-view">查看</button>
+        <button class="btn-history btn-delete">删除</button>
+    </div>
+</li>
+
+<!-- 历史记录项10 -->
+<li class="history-item">
+    <div class="history-icon">
+        <i class="fas fa-tags"></i>
+    </div>
+    <div class="history-content">
+        <div class="history-title">
+            <span>电商平台葡萄价格监测</span>
+            <span class="history-time">2023-06-11 14:50</span>
+        </div>
+        <div class="history-text">
+            京东、天猫等主流电商平台葡萄销售价格对比及促销活动效果分析...
+        </div>
+    </div>
+    <div class="history-actions">
+        <button class="btn-history btn-view">查看</button>
+        <button class="btn-history btn-delete">删除</button>
+    </div>
+</li>
+
+<!-- 历史记录项11 -->
+<li class="history-item">
+    <div class="history-icon">
+        <i class="fas fa-warehouse"></i>
+    </div>
+    <div class="history-content">
+        <div class="history-title">
+            <span>冷库存储对葡萄价格影响</span>
+            <span class="history-time">2023-06-10 09:20</span>
+        </div>
+        <div class="history-text">
+            不同存储条件下葡萄品质变化与市场价格波动的关联性研究...
+        </div>
+    </div>
+    <div class="history-actions">
+        <button class="btn-history btn-view">查看</button>
+        <button class="btn-history btn-delete">删除</button>
+    </div>
+</li>
+
+<!-- 历史记录项12 -->
+<li class="history-item">
+    <div class="history-icon">
+        <i class="fas fa-barcode"></i>
+    </div>
+    <div class="history-content">
+        <div class="history-title">
+            <span>葡萄品牌溢价研究</span>
+            <span class="history-time">2023-06-09 16:30</span>
+        </div>
+        <div class="history-text">
+            知名品牌葡萄与非品牌葡萄的价格差异及消费者购买偏好分析...
+        </div>
+    </div>
+    <div class="history-actions">
+        <button class="btn-history btn-view">查看</button>
+        <button class="btn-history btn-delete">删除</button>
+    </div>
+</li>
+
+<!-- 历史记录项13 -->
+<li class="history-item">
+    <div class="history-icon">
+        <i class="fas fa-thermometer-half"></i>
+    </div>
+    <div class="history-content">
+        <div class="history-title">
+            <span>气候异常对葡萄价格影响</span>
+            <span class="history-time">2023-06-08 10:40</span>
+        </div>
+        <div class="history-text">
+            极端天气事件导致葡萄减产对市场价格波动的短期和长期影响评估...
+        </div>
+    </div>
+    <div class="history-actions">
+        <button class="btn-history btn-view">查看</button>
+        <button class="btn-history btn-delete">删除</button>
+    </div>
+</li>
+
+<!-- 历史记录项14 -->
+<li class="history-item">
+    <div class="history-icon">
+        <i class="fas fa-industry"></i>
+    </div>
+    <div class="history-content">
+        <div class="history-title">
+            <span>葡萄加工产品价格链分析</span>
+            <span class="history-time">2023-06-07 13:25</span>
+        </div>
+        <div class="history-text">
+            从鲜食葡萄到葡萄干、果汁等加工产品的价值增值和价格形成机制...
+        </div>
+    </div>
+    <div class="history-actions">
+        <button class="btn-history btn-view">查看</button>
+        <button class="btn-history btn-delete">删除</button>
+    </div>
+</li>
+
+<!-- 历史记录项15 -->
+<li class="history-item">
+    <div class="history-icon">
+        <i class="fas fa-money-bill-wave"></i>
+    </div>
+    <div class="history-content">
+        <div class="history-title">
+            <span>葡萄期货价格走势</span>
+            <span class="history-time">2023-06-06 15:10</span>
+        </div>
+        <div class="history-text">
+            主要葡萄品种期货市场价格与现货市场价格关联性及套期保值策略...
+        </div>
+    </div>
+    <div class="history-actions">
+        <button class="btn-history btn-view">查看</button>
+        <button class="btn-history btn-delete">删除</button>
+    </div>
+</li>
+
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 页面加载时获取并显示用户信息
+        document.addEventListener('DOMContentLoaded', function() {
+            updateUserInfoDisplay();
+            setupHistoryActions();
+        });
+        
+        // 更新用户信息显示
+        function updateUserInfoDisplay() {
+            const userInfoContainer = document.getElementById('userInfoContainer');
+            const currentUserStr = sessionStorage.getItem('currentUser') || 
+                                localStorage.getItem('rememberedUser');
+            
+            if (currentUserStr) {
+                try {
+                    const currentUser = JSON.parse(currentUserStr);
+                    
+                    userInfoContainer.innerHTML = `
+                        <div class="user-info">
+                            <img src="${currentUser.avatar || 'static/images/VX/admin.png'}" 
+                                class="user-avatar" 
+                                alt="用户头像"
+                                onerror="this.src='static/images/VX/admin.png'">
+                            <span class="user-name">${currentUser.username || 'admin'}</span>
+                            <div class="user-dropdown">
+                                <a href="wode.html" class="profile-btn">个人中心</a>
+                                <a href="index.html" class="logout-btn">退出登录</a>
+                            </div>
+                        </div>
+                    `;
+                } catch (e) {
+                    console.error('解析用户数据失败:', e);
+                    showLoginButton();
+                }
+            } else {
+                showLoginButton();
+            }
+        }
+
+        // 显示登录按钮
+        function showLoginButton() {
+            const userInfoContainer = document.getElementById('userInfoContainer');
+            userInfoContainer.innerHTML = `
+                <a href="denglu.html" class="btn-login">登录/注册</a>
+            `;
+        }
+
+        // 处理退出登录
+        function handleLogout() {
+            sessionStorage.removeItem('currentUser');
+            localStorage.removeItem('rememberedUser');
+            window.location.href = 'index.html';
+        }
+
+        // 设置历史记录操作
+        function setupHistoryActions() {
+            // 查看按钮
+            document.querySelectorAll('.btn-view').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const title = this.closest('.history-item').querySelector('.history-title span').textContent;
+                    alert(`正在打开: ${title}`);
+                });
+            });
+            
+            // 删除按钮
+            document.querySelectorAll('.btn-delete').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const item = this.closest('.history-item');
+                    const title = item.querySelector('.history-title span').textContent;
+                    
+                    if(confirm(`确定要删除"${title}"的浏览记录吗？`)) {
+                        item.remove();
+                    }
+                });
+            });
+        }
+
+        
+        // 监听退出登录按钮点击事件
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('logout-btn')) {
+                handleLogout();
+            }
+        });
+    </script>
+</body>
+</html>

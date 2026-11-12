@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>葡萄市场分析 | 全国葡萄价格分析平台</title>
+    <link rel="stylesheet" href="static/css/zhuti.css">
+    <script src="static/js/zhuti.js"></script>
+    <script src="static/js/auth-check.js"></script>
+    <style>
+        :root {
+            --primary-color: #6a3093;
+            --secondary-color: #a044ff;
+            --accent-color: #28a745;
+            --text-color: #333;
+            --light-bg: #f8f9fa;
+            --white: #ffffff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--light-bg);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* 导航栏样式 */
+        header {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 1rem 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            height: 60px;
+            display: flex;
+        }
+        /* 用户信息样式 */
+        .user-info {
+            display: flex;
+            align-items: center;
+            margin-left: 2rem;
+            position: relative;
+            cursor: pointer;
+        }
+        .user-dropdown {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        background-color: var(--white);
+        border-radius: 5px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        padding: 10px 0;
+        min-width: 120px;
+        display: none;
+        z-index: 1000;
+    }
+
+    .user-dropdown a {
+        display: block;
+        padding: 8px 15px;
+        color: var(--text-color);
+        text-decoration: none;
+        transition: background-color 0.3s;
+    }
+
+    .user-dropdown a:hover {
+        background-color: var(--light-bg);
+    }
+
+    .user-info:hover .user-dropdown {
+        display: block;
+    }
+
+    .logout-btn {
+        color: #dc3545 !important;
+        font-weight: 500;
+    }
+
+    .logout-btn:hover {
+        background-color: rgba(220, 53, 69, 0.1) !important;
+    }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 8px;
+            border: 2px solid var(--white);
+        }
+
+        .user-name {
+            font-size: 1rem;
+            color: var(--white);
+        }
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 100%;
+        }
+        
+       .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--white);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            height: 100%;
+            margin-left: 0;
+            margin-right: auto;
+            padding-left: 20px;
+        }
+        /* 照片 */
+   
+        .logo-img {
+            width: auto;  
+            height: 60px;
+            max-height: 54px;
+            vertical-align: middle;
+        }
+        .logo-text {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--white);
+            text-decoration: none;
+        }
+        .btn-login {
+        background-color: var(--secondary-color);
+        color: var(--white);
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        font-size: 1rem;
+        transition: background-color 0.3s;
+        margin-left: auto; /* 将按钮推到最右侧 */
+    }
+
+    .btn-login:hover {
+        background-color: var(--primary-color);
+        color: var(--white);
+    }
+        .nav-links {
+            display: flex;
+            list-style: none;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .nav-links li {
+            margin-left: 2rem;
+        }
+        
+        .nav-links a {
+            color: var(--white);
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--secondary-color);
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--white);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        /* 页面标题 */
+        .page-header {
+            background: linear-gradient(rgba(106, 48, 147, 0.8), rgba(106, 48, 147, 0.8)), 
+                        url('static/images/beijing.png') no-repeat center center/cover;
+            padding: 5rem 0;
+            text-align: center;
+            color: var(--white);
+        }
+        
+        .page-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .breadcrumb {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+        }
+        
+        .breadcrumb li {
+            margin: 0 0.5rem;
+        }
+        
+        /* .breadcrumb li:not(:last-child)::after {
+            content: ">";
+            margin-left: 1rem;
+        } */
+        
+        .breadcrumb a {
+            color: var(--white);
+            text-decoration: none;
+        }
+        
+        /* 市场分析内容 */
+        .analysis-section {
+            padding: 3rem 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .section-title h2 {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .analysis-container {
+            background-color: var(--white);
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 3rem;
+        }
+        
+        .analysis-tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 2rem;
+        }
+        
+        .tab-btn {
+            padding: 1rem 2rem;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .tab-btn.active {
+            border-bottom-color: var(--primary-color);
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .chart-container {
+            height: 400px;
+            margin: 2rem 0;
+            position: relative;
+        }
+        
+        .chart-placeholder {
+            width: 100%;
+            height: 100%;
+            background-color: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 1.2rem;
+        }
+        
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .analysis-card {
+            background-color: var(--white);
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .analysis-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+        
+        .trend-indicator {
+            display: flex;
+            align-items: center;
+            margin: 0.5rem 0;
+        }
+        
+        .trend-up {
+            color: #28a745;
+        }
+        
+        .trend-down {
+            color: #dc3545;
+        }
+        
+        .trend-icon {
+            margin-right: 0.5rem;
+            font-size: 1.2rem;
+        }
+        
+        .region-comparison {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        
+        .region-comparison th, 
+        .region-comparison td {
+            padding: 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .region-comparison th {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+        
+        .region-comparison tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .download-section {
+            text-align: center;
+            margin-top: 3rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--secondary-color);
+            color: var(--white);
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: var(--primary-color);
+        }
+        
+        /* 页脚 */
+        footer {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 3rem 0;
+            text-align: center;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-column h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .footer-links a {
+            color: var(--white);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: var(--secondary-color);
+        }
+        
+        .copyright {
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .profile-btn {
+            color: #1e2c7a !important;
+            font-weight: 500;
+        }
+
+        .profile-btn:hover {
+            background-color: rgba(220, 53, 69, 0.1) !important;
+        }
+        
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <header>
+        <div class="container">
+            <nav>
+                <a href="index.html" class="logo">
+                    <img src="static/images/logo/logo白.png" alt="" class="logo-img">
+                    <span class="logo-text">葡萄价格分析</span>
+                </a>
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <ul class="nav-links" id="navLinks">
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="price-data.html">行情数据</a></li>
+                    <li><a href="market-analysis.html" class="active">市场分析</a></li>
+                    <li><a href="grape-varieties.html">葡萄品种</a></li>
+                    <li><a href="news.html">行业新闻</a></li>
+                    <li><a href="about.html">关于我们</a></li>
+                    <li id="userInfoContainer">
+                        <!-- 这里会动态显示用户信息或登录按钮 -->
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 页面标题 -->
+    <section class="page-header">
+        <div class="container">
+            <h1>葡萄市场深度分析</h1>
+            <!-- <ul class="breadcrumb">
+                <li><a href="index.html">首页</a></li>
+                <li>市场分析</li>
+            </ul> -->
+        </div>
+    </section>
+
+    <!-- 市场分析内容 -->
+    <section class="analysis-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>市场趋势与数据分析</h2>
+                <p>基于大数据分析的葡萄市场趋势报告与预测</p>
+            </div>
+            
+            <div class="analysis-container">
+                <div class="analysis-tabs">
+                    <button class="tab-btn active" data-tab="price-trend">价格趋势</button>
+                    <button class="tab-btn" data-tab="region-comparison">区域对比</button>
+                    <button class="tab-btn" data-tab="variety-analysis">品种分析</button>
+                    <button class="tab-btn" data-tab="seasonal-trend">季节性趋势</button>
+                </div>
+                
+                <div id="price-trend" class="tab-content active">
+                    <h3>全国葡萄价格走势分析</h3>
+                    <p>根据最新数据分析，2025年全国葡萄市场价格整体呈现稳中有升的趋势。受气候因素和市场供需关系影响，不同品种葡萄价格波动存在明显差异。</p>
+                    
+                    <div class="chart-container">
+                        <div class="chart-placeholder">
+                            <i class="fas fa-chart-line" style="font-size: 3rem; margin-right: 1rem;"></i>
+                            <span>全国葡萄价格趋势图表</span>
+                        </div>
+                    </div>
+                    
+                    <div class="analysis-grid">
+                        <div class="analysis-card">
+                            <h3>近期价格变化</h3>
+                            <div class="trend-indicator">
+                                <i class="fas fa-arrow-up trend-icon trend-up"></i>
+                                <span>过去30天平均价格上涨2.3%</span>
+                            </div>
+                            <div class="trend-indicator">
+                                <i class="fas fa-arrow-down trend-icon trend-down"></i>
+                                <span>巨峰葡萄价格下降1.5%</span>
+                            </div>
+                            <div class="trend-indicator">
+                                <i class="fas fa-arrow-up trend-icon trend-up"></i>
+                                <span>阳光玫瑰价格上涨5.8%</span>
+                            </div>
+                        </div>
+                        
+                        <div class="analysis-card">
+                            <h3>年度对比</h3>
+                            <div class="trend-indicator">
+                                <i class="fas fa-arrow-up trend-icon trend-up"></i>
+                                <span>同比2024年价格上涨8.7%</span>
+                            </div>
+                            <div class="trend-indicator">
+                                <i class="fas fa-arrow-up trend-icon trend-up"></i>
+                                <span>高端品种需求增长15%</span>
+                            </div>
+                            <div class="trend-indicator">
+                                <i class="fas fa-arrow-down trend-icon trend-down"></i>
+                                <span>传统品种市场份额下降3.2%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="region-comparison" class="tab-content">
+                    <h3>主要产区价格对比</h3>
+                    <p>我国葡萄主产区价格差异明显，新疆、云南等新兴产区价格优势显著，而传统产区如河北、山东等地价格相对稳定。</p>
+                    
+                    <div class="chart-container">
+                        <div class="chart-placeholder">
+                            <i class="fas fa-map-marked-alt" style="font-size: 3rem; margin-right: 1rem;"></i>
+                            <span>全国葡萄产区价格对比图表</span>
+                        </div>
+                    </div>
+                    
+                    <table class="region-comparison">
+                        <thead>
+                            <tr>
+                                <th>产区</th>
+                                <th>平均价格(元/斤)</th>
+                                <th>同比变化</th>
+                                <th>主要品种</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>新疆</td>
+                                <td>12.5</td>
+                                <td class="trend-up">+10.2%</td>
+                                <td>无核白、红提</td>
+                            </tr>
+                            <tr>
+                                <td>云南</td>
+                                <td>15.8</td>
+                                <td class="trend-up">+8.5%</td>
+                                <td>阳光玫瑰、夏黑</td>
+                            </tr>
+                            <tr>
+                                <td>河北</td>
+                                <td>9.2</td>
+                                <td class="trend-down">-1.3%</td>
+                                <td>巨峰、玫瑰香</td>
+                            </tr>
+                            <tr>
+                                <td>山东</td>
+                                <td>8.7</td>
+                                <td class="trend-up">+2.1%</td>
+                                <td>巨峰、红宝石</td>
+                            </tr>
+                            <tr>
+                                <td>辽宁</td>
+                                <td>10.3</td>
+                                <td class="trend-up">+5.7%</td>
+                                <td>巨峰、红提</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div id="variety-analysis" class="tab-content">
+                    <h3>葡萄品种市场分析</h3>
+                    <p>近年来，高端葡萄品种如阳光玫瑰、妮娜皇后等市场需求旺盛，价格持续走高，而传统品种如巨峰葡萄市场竞争激烈，价格相对平稳。</p>
+                    
+                    <div class="chart-container">
+                        <div class="chart-placeholder">
+                            <i class="fas fa-seedling" style="font-size: 3rem; margin-right: 1rem;"></i>
+                            <span>葡萄品种价格分布图表</span>
+                        </div>
+                    </div>
+                    
+                    <div class="analysis-grid">
+                        <div class="analysis-card">
+                            <h3>高端品种</h3>
+                            <p>阳光玫瑰、妮娜皇后等高端品种因品质优良、口感独特，深受消费者青睐，市场价格维持在30-50元/斤。</p>
+                            <div class="trend-indicator">
+                                <i class="fas fa-arrow-up trend-icon trend-up"></i>
+                                <span>阳光玫瑰市场份额增长25%</span>
+                            </div>
+                        </div>
+                        
+                        <div class="analysis-card">
+                            <h3>中端品种</h3>
+                            <p>红提、夏黑等中端品种价格稳定在15-25元/斤，是市场主流消费品种，占市场份额约45%。</p>
+                            <div class="trend-indicator">
+                                <i class="fas fa-equals trend-icon"></i>
+                                <span>价格与去年持平</span>
+                            </div>
+                        </div>
+                        
+                        <div class="analysis-card">
+                            <h3>传统品种</h3>
+                            <p>巨峰、玫瑰香等传统品种价格在8-12元/斤，主要面向大众市场，但市场份额逐年下降。</p>
+                            <div class="trend-indicator">
+                                <i class="fas fa-arrow-down trend-icon trend-down"></i>
+                                <span>市场份额下降3.2%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="seasonal-trend" class="tab-content">
+                    <h3>季节性价格波动</h3>
+                    <p>葡萄价格受季节性因素影响明显，7-9月为集中上市期，价格相对较低；而反季节葡萄和早熟品种价格较高。</p>
+                    
+                    <div class="chart-container">
+                        <div class="chart-placeholder">
+                            <i class="fas fa-calendar-alt" style="font-size: 3rem; margin-right: 1rem;"></i>
+                            <span>葡萄季节性价格波动图表</span>
+                        </div>
+                    </div>
+                    
+                    <div class="analysis-grid">
+                        <div class="analysis-card">
+                            <h3>旺季(7-9月)</h3>
+                            <p>集中上市期，供应充足，价格下降10-15%，是采购最佳时机。</p>
+                        </div>
+                        
+                        <div class="analysis-card">
+                            <h3>淡季(1-3月)</h3>
+                            <p>主要依赖冷库储存和进口，价格上涨20-30%，高端品种尤为明显。</p>
+                        </div>
+                        
+                        <div class="analysis-card">
+                            <h3>早熟品种(5-6月)</h3>
+                            <p>云南、广西等地的早熟品种上市，价格比旺季高出15-20%。</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="download-section">
+                    <a href="#" class="btn"><i class="fas fa-download"></i> 下载完整分析报告</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>关于我们</h3>
+                    <p>全国葡萄价格分析平台致力于提供最全面、最准确的葡萄市场数据和分析服务，助力葡萄产业健康发展。</p>
+                </div>
+                <div class="footer-column">
+                    <h3>快速链接</h3>
+                    <ul class="footer-links">
+                        <li><a href="index.html">首页</a></li>
+                        <li><a href="price-data.html">行情数据</a></li>
+                        <li><a href="market-analysis.html">市场分析</a></li>
+                        <li><a href="grape-varieties.html">葡萄品种</a></li>
+                        <li><a href="news.html">行业新闻</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>服务</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">数据API</a></li>
+                        <li><a href="#">定制报告</a></li>
+                        <li><a href="#">咨询服务</a></li>
+                        <li><a href="#">广告合作</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 全国葡萄价格分析平台. 保留所有权利.</p>
+            </div>
+        </div>
+    </footer>
+    <script src="static/js/market_analay.js"></script>
+
+    <!-- <script>
+       
+        // 标签页切换
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tabId = btn.getAttribute('data-tab');
+                
+                // 移除所有active类
+                tabBtns.forEach(b => b.classList.remove('active'));
+                tabContents.forEach(c => c.classList.remove('active'));
+                
+                // 添加active类到当前标签
+                btn.classList.add('active');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+        
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                    
+                    // 关闭移动菜单
+                    if (navLinks.classList.contains('active')) {
+                        navLinks.classList.remove('active');
+                    }
+                }
+            });
+        });
+          // 页面加载完成后初始化图表
+    document.addEventListener('DOMContentLoaded', function() {
+        // 价格趋势图表
+        const priceTrendCtx = document.createElement('canvas');
+        priceTrendCtx.id = 'priceTrendChart';
+        const priceTrendContainer = document.querySelector('#price-trend .chart-container');
+        priceTrendContainer.innerHTML = '';
+        priceTrendContainer.appendChild(priceTrendCtx);
+        
+        new Chart(priceTrendCtx, {
+            type: 'line',
+            data: {
+                labels: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+                datasets: [
+                    {
+                        label: '阳光玫瑰',
+                        data: [38, 36, 35, 32, 30, 28, 25, 22, 24, 28, 32, 36],
+                        borderColor: '#FF6384',
+                        backgroundColor: 'rgba(255, 99, 132, 0.1)',
+                        tension: 0.3
+                    },
+                    {
+                        label: '巨峰葡萄',
+                        data: [12, 11, 10, 9, 8, 7, 6, 5, 6, 8, 10, 12],
+                        borderColor: '#36A2EB',
+                        backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                        tension: 0.3
+                    },
+                    {
+                        label: '红提',
+                        data: [18, 17, 16, 15, 14, 13, 12, 11, 12, 14, 16, 18],
+                        borderColor: '#FFCE56',
+                        backgroundColor: 'rgba(255, 206, 86, 0.1)',
+                        tension: 0.3
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: '2025年主要葡萄品种价格趋势(元/斤)'
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        min: 0
+                    }
+                }
+            }
+        });
+
+        // 区域对比图表
+        const regionCtx = document.createElement('canvas');
+        regionCtx.id = 'regionChart';
+        const regionContainer = document.querySelector('#region-comparison .chart-container');
+        regionContainer.innerHTML = '';
+        regionContainer.appendChild(regionCtx);
+        
+        new Chart(regionCtx, {
+            type: 'bar',
+            data: {
+                labels: ['新疆', '云南', '河北', '山东', '辽宁'],
+                datasets: [
+                    {
+                        label: '平均价格(元/斤)',
+                        data: [12.5, 15.8, 9.2, 8.7, 10.3],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.7)',
+                            'rgba(54, 162, 235, 0.7)',
+                            'rgba(255, 206, 86, 0.7)',
+                            'rgba(75, 192, 192, 0.7)',
+                            'rgba(153, 102, 255, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)'
+                        ],
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: '主要产区葡萄平均价格对比'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // 品种分析图表
+        const varietyCtx = document.createElement('canvas');
+        varietyCtx.id = 'varietyChart';
+        const varietyContainer = document.querySelector('#variety-analysis .chart-container');
+        varietyContainer.innerHTML = '';
+        varietyContainer.appendChild(varietyCtx);
+        
+        new Chart(varietyCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['阳光玫瑰', '巨峰葡萄', '红提', '夏黑', '其他'],
+                datasets: [{
+                    data: [25, 30, 20, 15, 10],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.7)',
+                        'rgba(54, 162, 235, 0.7)',
+                        'rgba(255, 206, 86, 0.7)',
+                        'rgba(75, 192, 192, 0.7)',
+                        'rgba(153, 102, 255, 0.7)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: '葡萄品种市场份额(%)'
+                    },
+                    legend: {
+                        position: 'right'
+                    }
+                }
+            }
+        });
+
+        // 季节性趋势图表
+        const seasonalCtx = document.createElement('canvas');
+        seasonalCtx.id = 'seasonalChart';
+        const seasonalContainer = document.querySelector('#seasonal-trend .chart-container');
+        seasonalContainer.innerHTML = '';
+        seasonalContainer.appendChild(seasonalCtx);
+        
+        new Chart(seasonalCtx, {
+            type: 'radar',
+            data: {
+                labels: ['1-3月', '4-6月', '7-9月', '10-12月'],
+                datasets: [
+                    {
+                        label: '价格指数',
+                        data: [120, 90, 70, 100],
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        pointBackgroundColor: 'rgba(75, 192, 192, 1)',
+                        pointRadius: 5
+                    },
+                    {
+                        label: '供应量指数',
+                        data: [60, 80, 120, 90],
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        pointBackgroundColor: 'rgba(255, 99, 132, 1)',
+                        pointRadius: 5
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: '葡萄季节性供需变化(指数)'
+                    }
+                },
+                scales: {
+                    r: {
+                        angleLines: {
+                            display: true
+                        },
+                        suggestedMin: 0,
+                        suggestedMax: 150
+                    }
+                }
+            }
+        });
+    });
+       // 处理退出登录
+        function handleLogout() {
+            // 清除sessionStorage和localStorage中的用户数据
+            sessionStorage.removeItem('currentUser');
+            localStorage.removeItem('rememberedUser');
+            
+            // 更新显示
+            updateUserInfoDisplay();
+            
+            // 阻止默认行为并返回首页
+            window.location.href = 'index.html';
+            return false;
+        }
+
+       // 更新用户信息显示
+       function updateUserInfoDisplay() {
+                const userInfoContainer = document.getElementById('userInfoContainer');
+                const currentUserStr = sessionStorage.getItem('currentUser') || 
+                                    localStorage.getItem('rememberedUser');
+                
+                if (currentUserStr) {
+                    try {
+                        const currentUser = JSON.parse(currentUserStr);
+                        
+                        userInfoContainer.innerHTML = `
+                            <div class="user-info">
+                                <img src="${currentUser.avatar}" alt="${currentUser.username}的头像" class="user-avatar"
+                                onerror="this.src='static/images/VX/putong.png'">
+                                
+                                <span class="user-name">${currentUser.username}</span>
+                                <div class="user-dropdown">
+                                    <a href="wode.html" class="profile-btn">个人中心</a>
+                                    <a href="index.html" class="logout-btn">退出登录</a>
+                                </div>
+                            </div>
+                        `;
+                    } 
+                    catch (e) {
+                        console.error('解析用户数据失败:', e);
+                        showLoginButton();
+                    }
+                } 
+                else {
+                    showLoginButton();
+                }
+            }
+        function showLoginButton() {
+            userInfoContainer.innerHTML = `
+                <a href="denglu.html" class="btn-login">登录/注册</a>
+            `;
+        }
+
+
+        // 页面加载时更新用户信息显示
+        updateUserInfoDisplay();
+        // 监听退出登录链接的点击事件
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('logout-btn')) {
+            handleLogout();
+        }
+    });
+    </script> -->
+</body>
+</html>

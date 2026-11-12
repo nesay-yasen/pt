@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>供应大厅 - 全国葡萄价格分析平台</title>
+    <link rel="stylesheet" href="static/css/zhuti.css">
+    <script src="static/js/zhuti.js"></script>
+    <!-- 引入Leaflet地图库 -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- 引入ECharts -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #6a3093;
+            --secondary-color: #a044ff;
+            --accent-color: #28a745;
+            --text-color: #333;
+            --light-bg: #f8f9fa;
+            --white: #ffffff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--light-bg);
+        }
+        
+        .container {
+            max-width: none;
+            margin: 0 auto;
+            padding: 0 ;
+        }
+        
+        /* 导航栏样式 */
+        header {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 1rem 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            height: 60px;
+        }
+        
+        /* 用户信息样式 */
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 18px;
+            object-fit: cover;
+            margin-right: 12px;
+            background-color: #f0f0f0;
+            border: 2px solid #eaeaea;
+            vertical-align: middle;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            border-radius: 20px;
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .user-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: var(--white);
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 10px 0;
+            min-width: 120px;
+            display: none;
+            z-index: 1000;
+        }
+        
+        .user-dropdown a {
+            display: block;
+            padding: 8px 15px;
+            color: var(--text-color);
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .user-dropdown a:hover {
+            background-color: var(--light-bg);
+        }
+
+        .user-info:hover .user-dropdown {
+            display: block;
+        }
+        
+        .logout-btn {
+            color: #dc3545 !important;
+            font-weight: 500;
+        }
+
+        .logout-btn:hover {
+            background-color: rgba(220, 53, 69, 0.1) !important;
+        }
+
+        .user-name {
+            font-size: 1rem;
+            color: var(--white);
+            font-weight: 500;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 100%;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--white);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            height: 100%;
+            margin-left: 0;
+            margin-right: auto;
+            padding-left: 20px;
+        }
+        
+        .logo-img {
+            width: auto;  
+            height: 60px;
+            max-height: 54px;
+            vertical-align: middle;
+        }
+        
+        .logo-text {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--white);
+            text-decoration: none;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .nav-links li {
+            margin-left: 2rem;
+        }
+        
+        .nav-links a {
+            color: var(--white);
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--secondary-color);
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--white);
+            font-size: 1.5rem;
+            cursor: pointer;
+            height: 100%;
+            padding: 0 15px;
+        }
+        
+        /* 供应大厅内容样式 */
+        .supply-section {
+            padding: 3rem 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .section-title h2 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .section-title p {
+            font-size: 1.1rem;
+            color: var(--text-color);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        /* 地图容器样式 */
+        .map-container {
+            width: 100%;
+            height: 600px;
+            margin-bottom: 2rem;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        #chinaMap {
+            width: 100%;
+            height: 100%;
+        }
+        
+        /* 图表容器样式 */
+        .chart-container {
+            width: 100%;
+            height: 400px;
+            margin: 2rem 0;
+            background-color: var(--white);
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 1rem;
+        }
+        
+        /* 数据表格样式 */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            background-color: var(--white);
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .data-table th, .data-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .data-table th {
+            background-color: var(--primary-color);
+            color: var(--white);
+            font-weight: bold;
+        }
+        
+        .data-table tr:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .data-table a {
+            color: var(--secondary-color);
+            text-decoration: none;
+        }
+        
+        .data-table a:hover {
+            text-decoration: underline;
+        }
+        
+        /* 筛选区域样式 */
+        .filter-area {
+            background-color: var(--white);
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .filter-group {
+            display: flex;
+            align-items: center;
+            margin-right: 1.5rem;
+        }
+        
+        .filter-group label {
+            margin-right: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .filter-group select, .filter-group input {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            min-width: 150px;
+        }
+        
+        .filter-btn {
+            background-color: var(--secondary-color);
+            color: var(--white);
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .filter-btn:hover {
+            background-color: var(--primary-color);
+        }
+        
+        /* 页脚样式 */
+        footer {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 3rem 0;
+            text-align: center;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-column h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .footer-links a {
+            color: var(--white);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: var(--secondary-color);
+        }
+        
+        .copyright {
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .btn-login {
+            background-color: var(--secondary-color);
+            color: var(--white);
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+            margin-left: auto;
+        }
+
+        .btn-login:hover {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+        
+        .profile-btn {
+            color: #1e2c7a !important;
+            font-weight: 500;
+        }
+
+        .profile-btn:hover {
+            background-color: rgba(220, 53, 69, 0.1) !important;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .map-container {
+                height: 400px;
+            }
+            
+            .chart-container {
+                height: 300px;
+            }
+            
+            .filter-area {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .filter-group {
+                margin-bottom: 1rem;
+                width: 100%;
+            }
+            
+            .filter-group select, .filter-group input {
+                width: 100%;
+            }
+        }
+
+        /* 地图图例样式 */
+        .map-legend {
+            position: absolute;
+            bottom: 30px;
+            right: 10px;
+            background-color: white;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0,0,0,0.3);
+            z-index: 1000;
+        }
+
+        .map-legend h4 {
+            margin: 0 0 5px 0;
+            font-size: 14px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 3px;
+        }
+
+        .legend-color {
+            width: 15px;
+            height: 15px;
+            margin-right: 5px;
+        }
+
+        .legend-label {
+            font-size: 12px;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <header>
+        <div class="container">
+            <nav>
+                <a href="index.html" class="logo">
+                    <span class="logo-text">葡萄价格分析</span>
+                </a>
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <ul class="nav-links" id="navLinks">
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="price-data.html">行情数据</a></li>
+                    <li><a href="supply-hall.html" class="active">供应大厅</a></li>
+                    <li><a href="market-analysis.html">市场分析</a></li>
+                    <li><a href="grape-varieties.html">葡萄品种</a></li>
+                    <li><a href="news.html">行业新闻</a></li>
+                    <li><a href="about.html">关于我们</a></li>
+                    <li id="userInfoContainer">
+                        <!-- 这里会动态显示用户信息或登录按钮 -->
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 供应大厅内容 -->
+    <section class="supply-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>葡萄供应大厅</h2>
+                <p>实时展示全国各产区葡萄供应情况，直观比较价格差异</p>
+            </div>
+            
+            <!-- 筛选区域 -->
+            <div class="filter-area">
+                <div class="filter-group">
+                    <label for="region">地区:</label>
+                    <select id="region">
+                        <option value="all">全国</option>
+                        <option value="north">华北地区</option>
+                        <option value="east">华东地区</option>
+                        <option value="south">华南地区</option>
+                        <option value="west">西部地区</option>
+                        <option value="northeast">东北地区</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="variety">品种:</label>
+                    <select id="variety">
+                        <option value="all">全部品种</option>
+                        <option value="red">红提</option>
+                        <option value="green">青提</option>
+                        <option value="black">黑提</option>
+                        <option value="seedless">无籽葡萄</option>
+                        <option value="muscat">玫瑰香</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="price-range">价格区间:</label>
+                    <select id="price-range">
+                        <option value="all">全部</option>
+                        <option value="0-5">0-5元/斤</option>
+                        <option value="5-10">5-10元/斤</option>
+                        <option value="10-15">10-15元/斤</option>
+                        <option value="15-20">15-20元/斤</option>
+                        <option value="20+">20元以上/斤</option>
+                    </select>
+                </div>
+                
+                <button class="filter-btn" id="applyFilter">
+                    <i class="fas fa-filter"></i> 筛选
+                </button>
+            </div>
+            
+            <!-- 地图容器 -->
+            <div class="map-container">
+                <div id="chinaMap"></div>
+            </div>
+            
+            <!-- 价格对比图表 -->
+            <div class="section-title">
+                <h3>各地区葡萄价格对比</h3>
+                <p>单位：元/斤（数据更新时间：2023年6月）</p>
+            </div>
+            <div class="chart-container" id="priceChart"></div>
+            
+            <!-- 供应数据表格 -->
+            <div class="section-title">
+                <h3>最新供应信息</h3>
+                <p>实时更新的葡萄供应信息，点击商品标题查看详情</p>
+            </div>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>价格(元/斤)</th>
+                        <th>成交金额(万元)</th>
+                        <th>商品标题</th>
+                        <th>商家名称</th>
+                        <th>所在地</th>
+                        <th>榜单信息</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>8.5</td>
+                        <td>12.3</td>
+                        <td><a href="#">新疆特级红提葡萄 新鲜采摘 甜度高</a></td>
+                        <td>新疆绿洲果业</td>
+                        <td>新疆吐鲁番</td>
+                        <td>热销榜第3名</td>
+                    </tr>
+                    <tr>
+                        <td>12.8</td>
+                        <td>8.6</td>
+                        <td><a href="#">云南阳光玫瑰青提 无籽 脆甜</a></td>
+                        <td>云南高原农场</td>
+                        <td>云南大理</td>
+                        <td>新品榜第1名</td>
+                    </tr>
+                    <tr>
+                        <td>6.9</td>
+                        <td>15.2</td>
+                        <td><a href="#">河北巨峰葡萄 果粒大 汁多味甜</a></td>
+                        <td>河北丰收果园</td>
+                        <td>河北张家口</td>
+                        <td>性价比榜第2名</td>
+                    </tr>
+                                        <tr>
+                        <td>15.2</td>
+                        <td>5.4</td>
+                        <td><a href="#">辽宁无籽黑提 果肉紧实 耐储存</a></td>
+                        <td>辽宁黑土地农场</td>
+                        <td>辽宁营口</td>
+                        <td>优质供应商</td>
+                    </tr>
+                    <tr>
+                        <td>7.8</td>
+                        <td>9.7</td>
+                        <td><a href="#">陕西户太八号葡萄 皮薄肉厚</a></td>
+                        <td>陕西秦岭果园</td>
+                        <td>陕西西安</td>
+                        <td>热销榜第7名</td>
+                    </tr>
+                    <tr>
+                        <td>11.5</td>
+                        <td>6.3</td>
+                        <td><a href="#">江苏夏黑葡萄 早熟品种 甜度高</a></td>
+                        <td>江苏江南果园</td>
+                        <td>江苏苏州</td>
+                        <td>新品榜第3名</td>
+                    </tr>
+                    <tr>
+                        <td>10.2</td>
+                        <td>4.8</td>
+                        <td><a href="#">甘肃红地球葡萄 色泽鲜艳 耐运输</a></td>
+                        <td>甘肃河西果业</td>
+                        <td>甘肃武威</td>
+                        <td>优质供应商</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>关于我们</h3>
+                    <p>全国葡萄价格分析平台致力于提供最全面、最准确的葡萄市场数据和分析服务，助力葡萄产业健康发展。</p>
+                </div>
+                <div class="footer-column">
+                    <h3>快速链接</h3>
+                    <ul class="footer-links">
+                        <li><a href="index.html">首页</a></li>
+                        <li><a href="price-data.html">行情数据</a></li>
+                        <li><a href="supply-hall.html">供应大厅</a></li>
+                        <li><a href="market-analysis.html">市场分析</a></li>
+                        <li><a href="grape-varieties.html">葡萄品种</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>服务</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">数据API</a></li>
+                        <li><a href="#">定制报告</a></li>
+                        <li><a href="#">咨询服务</a></li>
+                        <li><a href="#">广告合作</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 全国葡萄价格分析平台. 保留所有权利.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 处理退出登录
+        function handleLogout() {
+            // 清除sessionStorage和localStorage中的用户数据
+            sessionStorage.removeItem('currentUser');
+            localStorage.removeItem('rememberedUser');
+            
+            // 更新显示
+            updateUserInfoDisplay();
+            
+            // 阻止默认行为并返回首页
+            window.location.href = 'index.html';
+            return false;
+        }
+        
+        // 更新用户信息显示
+        function updateUserInfoDisplay() {
+            const userInfoContainer = document.getElementById('userInfoContainer');
+            const currentUserStr = sessionStorage.getItem('currentUser') || 
+                                localStorage.getItem('rememberedUser');
+            
+            if (currentUserStr) {
+                try {
+                    const currentUser = JSON.parse(currentUserStr);
+                    
+                    userInfoContainer.innerHTML = `
+                        <div class="user-info">
+                            <span class="user-name">${currentUser.username}</span>
+                            <div class="user-dropdown">
+                                <a href="wode.html" class="profile-btn">个人中心</a>
+                                <a href="index.html" class="logout-btn">退出登录</a>
+                            </div>
+                        </div>
+                    `;
+                } 
+                catch (e) {
+                    console.error('解析用户数据失败:', e);
+                    showLoginButton();
+                }
+            } 
+            else {
+                showLoginButton();
+            }
+        }
+        
+        function showLoginButton() {
+            const userInfoContainer = document.getElementById('userInfoContainer');
+            userInfoContainer.innerHTML = `
+                <a href="denglu.html" class="btn-login">登录/注册</a>
+            `;
+        }
+        
+        // 页面加载时更新用户信息显示
+        updateUserInfoDisplay();
+        
+        // 监听退出登录链接的点击事件
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('logout-btn')) {
+                handleLogout();
+            }
+        });
+        
+        // 初始化Leaflet地图
+        function initMap() {
+            // 创建地图实例，设置中国中心点和缩放级别
+            var map = L.map('chinaMap').setView([35.86166, 104.195397], 5);
+            
+            // 添加OpenStreetMap底图
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+            
+            // 模拟各地区葡萄价格数据
+            var priceData = {
+                "北京": 12.5,
+                "天津": 11.8,
+                "河北": 8.2,
+                "山西": 7.9,
+                "内蒙古": 6.5,
+                "辽宁": 9.3,
+                "吉林": 8.7,
+                "黑龙江": 7.8,
+                "上海": 13.2,
+                "江苏": 10.5,
+                "浙江": 11.8,
+                "安徽": 9.1,
+                "福建": 10.2,
+                "江西": 8.7,
+                "山东": 9.8,
+                "河南": 7.5,
+                "湖北": 8.9,
+                "湖南": 8.3,
+                "广东": 12.0,
+                "广西": 9.5,
+                "海南": 10.8,
+                "重庆": 9.2,
+                "四川": 8.6,
+                "贵州": 7.9,
+                "云南": 9.4,
+                "西藏": 15.0,
+                "陕西": 8.1,
+                "甘肃": 7.3,
+                "青海": 8.5,
+                "宁夏": 7.7,
+                "新疆": 6.8
+            };
+            
+            // 定义颜色范围
+            function getColorByPrice(price) {
+                if (price < 7) return '#1a9850';
+                else if (price < 9) return '#91cf60';
+                else if (price < 11) return '#d9ef8b';
+                else if (price < 13) return '#fee08b';
+                else return '#fc8d59';
+            }
+            
+            // 模拟省份边界数据 - 实际应用中应该使用GeoJSON数据
+            var provinceBounds = {
+                "北京": [[39.442758, 115.422886], [40.215893, 117.507412]],
+                "上海": [[30.675741, 120.864608], [31.866344, 122.203415]],
+                // 其他省份的边界坐标...
+            };
+            
+            // 添加省份标记 - 实际应用中应该使用GeoJSON数据
+            Object.keys(priceData).forEach(function(province) {
+                var price = priceData[province];
+                var color = getColorByPrice(price);
+                
+                // 使用模拟的中心点 - 实际应用中应该使用准确的省份中心点
+                var center = [35 + Math.random() * 10, 100 + Math.random() * 30];
+                
+                // 创建圆形标记
+                var circle = L.circle(center, {
+                    color: color,
+                    fillColor: color,
+                    fillOpacity: 0.7,
+                    radius: 80000 // 半径大小
+                }).addTo(map);
+                
+                // 添加弹出窗口
+                circle.bindPopup(`<b>${province}</b><br>葡萄平均价格: ${price}元/斤`);
+                
+                // 添加标签
+                circle.bindTooltip(`${province}: ${price}元`, {
+                    permanent: false,
+                    direction: 'top'
+                });
+            });
+            
+            // 添加图例
+            var legend = L.control({position: 'bottomright'});
+            legend.onAdd = function(map) {
+                var div = L.DomUtil.create('div', 'map-legend');
+                div.innerHTML = `
+                    <h4>价格图例(元/斤)</h4>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color:#1a9850"></div>
+                        <span class="legend-label">&lt;7</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color:#91cf60"></div>
+                        <span class="legend-label">7-9</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color:#d9ef8b"></div>
+                        <span class="legend-label">9-11</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color:#fee08b"></div>
+                        <span class="legend-label">11-13</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color:#fc8d59"></div>
+                        <span class="legend-label">&gt;13</span>
+                    </div>
+                `;
+                return div;
+            };
+            legend.addTo(map);
+        }
+        
+        // 初始化价格对比图表
+        function initPriceChart() {
+            var chartDom = document.getElementById('priceChart');
+            var myChart = echarts.init(chartDom);
+            
+            // 模拟数据
+            var option = {
+                title: {
+                    text: '全国主要产区葡萄价格对比',
+                    left: 'center'
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'shadow'
+                    }
+                },
+                legend: {
+                    data: ['红提', '青提', '黑提', '玫瑰香'],
+                    top: 30
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'category',
+                    data: ['新疆', '云南', '河北', '山东', '辽宁', '陕西', '江苏', '甘肃'],
+                    axisLabel: {
+                        rotate: 30
+                    }
+                },
+                yAxis: {
+                    type: 'value',
+                    name: '价格(元/斤)'
+                },
+                series: [
+                    {
+                        name: '红提',
+                        type: 'bar',
+                        data: [8.5, 9.2, 6.9, 7.8, 8.1, 7.5, 8.3, 7.2],
+                        itemStyle: {
+                            color: '#d62728'
+                        }
+                    },
+                    {
+                        name: '青提',
+                        type: 'bar',
+                        data: [12.8, 13.5, 10.2, 11.5, 10.8, 11.2, 12.0, 10.5],
+                        itemStyle: {
+                            color: '#2ca02c'
+                        }
+                    },
+                    {
+                        name: '黑提',
+                        type: 'bar',
+                        data: [15.2, 14.8, 12.5, 13.2, 14.0, 12.8, 13.5, 12.0],
+                        itemStyle: {
+                            color: '#1f77b4'
+                        }
+                    },
+                    {
+                        name: '玫瑰香',
+                        type: 'bar',
+                        data: [9.5, 10.2, 8.8, 9.2, 8.5, 9.0, 9.8, 8.2],
+                        itemStyle: {
+                            color: '#ff7f0e'
+                        }
+                    }
+                ]
+            };
+            
+            myChart.setOption(option);
+            
+            // 窗口大小变化时重新调整图表大小
+            window.addEventListener('resize', function() {
+                myChart.resize();
+            });
+            
+            return myChart;
+        }
+        
+        // 页面加载完成后初始化地图和图表
+        window.onload = function() {
+            initMap();
+            var priceChart = initPriceChart();
+            
+            // 筛选按钮点击事件
+            document.getElementById('applyFilter').addEventListener('click', function() {
+                var region = document.getElementById('region').value;
+                var variety = document.getElementById('variety').value;
+                var priceRange = document.getElementById('price-range').value;
+                
+                // 这里应该根据筛选条件更新地图和图表
+                // 实际应用中这里应该发起AJAX请求获取筛选后的数据
+                alert(`已应用筛选条件:\n地区: ${region}\n品种: ${variety}\n价格区间: ${priceRange}`);
+            });
+        };
+    </script>
+</body>
+</html>

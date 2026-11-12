@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>葡萄价格分析 - 系统设置</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="static/css/zhuti.css">
+    <script src="static/js/zhuti.js"></script>
+    <style>
+        :root {
+            --primary-color: #6a3093;
+            --secondary-color: #a044ff;
+            --accent-color: #28a745;
+            --text-color: #333;
+            --light-gray: #f5f5f5;
+            --medium-gray: #e0e0e0;
+            --dark-gray: #757575;
+            --white: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background-color: var(--light-gray);
+            color: var(--text-color);
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: none;
+            margin: 0 auto;
+            padding: 0;
+        }
+
+        /* 导航栏样式 */
+        header {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 1rem 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            height: 60px;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 100%;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--white);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            height: 100%;
+        }
+
+        .logo-img {
+            width: auto;
+            height: 60px;
+            max-height: 54px;
+            vertical-align: middle;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-links li {
+            margin-left: 2rem;
+        }
+
+        .nav-links a {
+            color: var(--white);
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--secondary-color);
+        }
+
+        /* 用户信息样式 */
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 18px;
+            object-fit: cover;
+            margin-right: 12px;
+            background-color: #f0f0f0;
+            border: 2px solid #eaeaea;
+            vertical-align: middle;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            border-radius: 20px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .user-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: var(--white);
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 10px 0;
+            min-width: 120px;
+            display: none;
+            z-index: 1000;
+        }
+
+        .user-dropdown a {
+            display: block;
+            padding: 8px 15px;
+            color: var(--text-color);
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .user-dropdown a:hover {
+            background-color: var(--light-gray);
+        }
+
+        .user-info:hover .user-dropdown {
+            display: block;
+        }
+
+        .logout-btn {
+            color: #dc3545 !important;
+            font-weight: 500;
+        }
+
+        .logout-btn:hover {
+            background-color: rgba(220, 53, 69, 0.1) !important;
+        }
+
+        .user-name {
+            font-size: 1rem;
+            color: var(--white);
+            font-weight: 500;
+        }
+
+        /* 系统设置内容样式 */
+        .settings-container {
+            display: flex;
+            margin-top: 30px;
+            gap: 30px;
+        }
+
+        .profile-sidebar {
+            width: 250px;
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .settings-main {
+            flex: 1;
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .settings-menu {
+            list-style: none;
+        }
+
+        .settings-menu li {
+            margin-bottom: 10px;
+        }
+
+        .settings-menu a {
+            display: block;
+            padding: 10px 15px;
+            color: var(--text-color);
+            text-decoration: none;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+
+        .settings-menu a:hover, .settings-menu a.active {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+
+        .settings-menu a i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .settings-section {
+            margin-bottom: 30px;
+        }
+
+        .settings-section h3 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        /* 系统设置项样式 */
+        .settings-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .settings-info {
+            flex: 1;
+        }
+
+        .settings-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .settings-description {
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+        }
+
+        .settings-status {
+            color: var(--accent-color);
+            font-weight: 500;
+        }
+
+        .settings-status.inactive {
+            color: var(--dark-gray);
+        }
+
+        .settings-actions {
+            margin-left: 20px;
+        }
+
+        .btn-settings {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-modify {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+
+        .btn-enable {
+            background-color: var(--accent-color);
+            color: var(--white);
+        }
+
+        .btn-disable {
+            background-color: #dc3545;
+            color: var(--white);
+        }
+
+        .btn-settings:hover {
+            opacity: 0.9;
+        }
+
+        /* 设置表单样式 */
+        .settings-form {
+            max-width: 500px;
+            margin-top: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--medium-gray);
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .form-actions {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .settings-container {
+                flex-direction: column;
+            }
+            
+            .profile-sidebar {
+                width: 100%;
+                margin-bottom: 20px;
+            }
+            
+            .settings-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .settings-actions {
+                margin-left: 0;
+                margin-top: 10px;
+                align-self: flex-end;
+            }
+        }
+
+        /* 主题样式
+        .theme-purple {
+            --primary-color: #6a3093;
+            --secondary-color: #a044ff;
+        }
+        .theme-blue {
+            --primary-color: #2a52be;
+            --secondary-color: #5d8bf4;
+        }
+        .theme-green {
+            --primary-color: #2e8b57;
+            --secondary-color: #5cdb95;
+        }
+        .theme-dark {
+            --primary-color: #343a40;
+            --secondary-color: #495057;
+            --text-color: #f8f9fa;
+            --light-gray: #212529;
+            --white: #343a40;
+        } */
+
+        /* 字体大小 */
+        .font-small {
+            font-size: 14px;
+        }
+        .font-medium {
+            font-size: 16px;
+        }
+        .font-large {
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body class="theme-purple font-medium">
+    <!-- 导航栏 -->
+    <header>
+        <div class="container">
+            <nav>
+                <a href="index.html" class="logo">
+                    <img src="static/images/logo/logo白.png" alt="" class="logo-img">
+                    <span class="logo-text">葡萄价格分析</span>
+                </a>
+                <ul class="nav-links" id="navLinks">
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="price-data.html">行情数据</a></li>
+                    <li><a href="market-analysis.html">市场分析</a></li>
+                    <li><a href="grape-varieties.html">葡萄品种</a></li>
+                    <li><a href="news.html">行业新闻</a></li>
+                    <li><a href="about.html">关于我们</a></li>
+                    <li id="userInfoContainer">
+                        <!-- 这里会动态显示用户信息或登录按钮 -->
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 系统设置内容 -->
+    <div class="container">
+        <div class="settings-container">
+            <!-- 侧边栏菜单 -->
+            <div class="profile-sidebar">
+                <ul class="settings-menu">
+                    <li><a href="wode.html"><i class="fas fa-user"></i> 个人资料</a></li>
+                    <li><a href="analysis.html"><i class="fas fa-chart-line"></i> 数据分析</a></li>
+                    <li><a href="notification.html"><i class="fas fa-bell"></i> 消息通知</a></li>
+                    <li><a href="security.html"><i class="fas fa-lock"></i> 安全设置</a></li>
+                    <li><a href="favorites.html"><i class="fas fa-heart"></i> 收藏内容</a></li>
+                    <li><a href="history.html"><i class="fas fa-history"></i> 浏览历史</a></li>
+                    <li><a href="settings.html" class="active"><i class="fas fa-cog"></i> 系统设置</a></li>
+                </ul>
+            </div>
+
+            <!-- 主内容区 -->
+            <div class="settings-main">
+                <div class="settings-section">
+                    <h3><i class="fas fa-cog"></i> 系统设置</h3>
+                    
+                    <!-- 界面设置 -->
+                    <div class="settings-item">
+                        <div class="settings-info">
+                            <div class="settings-title">界面主题</div>
+                            <div class="settings-description">设置系统界面的颜色主题和显示风格</div>
+                        </div>
+                        <div class="settings-status" id="currentTheme">紫色主题</div>
+                        <div class="settings-actions">
+                            <button class="btn-settings btn-modify" id="modifyThemeBtn">修改</button>
+                        </div>
+                    </div>
+                    
+                    <!-- 数据更新频率 -->
+                    <div class="settings-item">
+                        <div class="settings-info">
+                            <div class="settings-title">数据更新频率</div>
+                            <div class="settings-description">设置价格数据自动刷新的时间间隔</div>
+                        </div>
+                        <div class="settings-status" id="currentRefreshRate">每小时</div>
+                        <div class="settings-actions">
+                            <button class="btn-settings btn-modify" id="modifyRefreshBtn">调整</button>
+                        </div>
+                    </div>
+                    
+                    <!-- 价格预警设置 -->
+                    <div class="settings-item">
+                        <div class="settings-info">
+                            <div class="settings-title">价格预警设置</div>
+                            <div class="settings-description">设置价格波动超过阈值时的通知方式</div>
+                        </div>
+                        <div class="settings-status" id="currentAlertStatus">已启用</div>
+                        <div class="settings-actions">
+                            <button class="btn-settings btn-disable" id="toggleAlertBtn">禁用</button>
+                        </div>
+                    </div>
+                    
+                    <!-- 数据导出格式 -->
+                    <div class="settings-item">
+                        <div class="settings-info">
+                            <div class="settings-title">数据导出格式</div>
+                            <div class="settings-description">设置分析报告导出的默认文件格式</div>
+                        </div>
+                        <div class="settings-status" id="currentExportFormat">PDF</div>
+                        <div class="settings-actions">
+                            <button class="btn-settings btn-modify" id="modifyExportBtn">更改</button>
+                        </div>
+                    </div>
+                    
+                    <!-- 默认显示区域 -->
+                    <div class="settings-item">
+                        <div class="settings-info">
+                            <div class="settings-title">默认显示区域</div>
+                            <div class="settings-description">设置首页地图默认显示的地理区域</div>
+                        </div>
+                        <div class="settings-status" id="currentDefaultRegion">华东地区</div>
+                        <div class="settings-actions">
+                            <button class="btn-settings btn-modify" id="modifyRegionBtn">设置</button>
+                        </div>
+                    </div>
+                    
+                    <!-- 分析报告模板 -->
+                    <div class="settings-item">
+                        <div class="settings-info">
+                            <div class="settings-title">分析报告模板</div>
+                            <div class="settings-description">自定义数据分析报告的生成模板</div>
+                        </div>
+                        <div class="settings-status" id="currentReportTemplate">标准模板</div>
+                        <div class="settings-actions">
+                            <button class="btn-settings btn-modify" id="modifyTemplateBtn">编辑</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 主题设置表单 (默认隐藏) -->
+                <div class="settings-section" id="themeForm" style="display: none;">
+                    <h4><i class="fas fa-palette"></i> 界面主题设置</h4>
+                    <form class="settings-form" id="themeSettingsForm">
+                        <div class="form-group">
+                            <label for="themeColor">主题颜色</label>
+                            <select id="themeColor" class="form-control">
+                                <option value="purple" selected>紫色主题</option>
+                                <option value="blue">蓝色主题</option>
+                                <option value="green">绿色主题</option>
+                                <option value="dark">深色模式</option>
+                                <option value="red">红色主题</option>
+                                <option value="orange">橙色主题</option>
+                                <option value="pink">粉色主题</option>
+                                <option value="teal">青绿色主题</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="fontSize">字体大小</label>
+                            <select id="fontSize" class="form-control">
+                                <option value="small">小号</option>
+                                <option value="medium" selected>中号</option>
+                                <option value="large">大号</option>
+                            </select>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn-settings btn-modify">保存设置</button>
+                            <button type="button" id="cancelTheme" class="btn-settings btn-disable">取消</button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- 数据更新频率表单 (默认隐藏) -->
+                <div class="settings-section" id="refreshForm" style="display: none;">
+                    <h4><i class="fas fa-sync-alt"></i> 数据更新频率设置</h4>
+                    <form class="settings-form" id="refreshSettingsForm">
+                        <div class="form-group">
+                            <label for="refreshRate">更新频率</label>
+                            <select id="refreshRate" class="form-control">
+                                <option value="15min">每15分钟</option>
+                                <option value="30min">每30分钟</option>
+                                <option value="hourly" selected>每小时</option>
+                                <option value="daily">每日</option>
+                            </select>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn-settings btn-modify">保存设置</button>
+                            <button type="button" id="cancelRefresh" class="btn-settings btn-disable">取消</button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- 数据导出格式表单 (默认隐藏) -->
+                <div class="settings-section" id="exportForm" style="display: none;">
+                    <h4><i class="fas fa-file-export"></i> 数据导出格式设置</h4>
+                    <form class="settings-form" id="exportSettingsForm">
+                        <div class="form-group">
+                            <label for="exportFormat">导出格式</label>
+                            <select id="exportFormat" class="form-control">
+                                <option value="pdf" selected>PDF</option>
+                                <option value="excel">Excel</option>
+                                <option value="word">Word</option>
+                                <option value="csv">CSV</option>
+                            </select>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn-settings btn-modify">保存设置</button>
+                            <button type="button" id="cancelExport" class="btn-settings btn-disable">取消</button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- 默认显示区域表单 (默认隐藏) -->
+                <div class="settings-section" id="regionForm" style="display: none;">
+                    <h4><i class="fas fa-map-marked-alt"></i> 默认显示区域设置</h4>
+                    <form class="settings-form" id="regionSettingsForm">
+                        <div class="form-group">
+                            <label for="defaultRegion">默认区域</label>
+                            <select id="defaultRegion" class="form-control">
+                                <option value="east-china" selected>华东地区</option>
+                                <option value="north-china">华北地区</option>
+                                <option value="south-china">华南地区</option>
+                                <option value="central-china">华中地区</option>
+                                <option value="northeast">东北地区</option>
+                                <option value="northwest">西北地区</option>
+                                <option value="southwest">西南地区</option>
+                            </select>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn-settings btn-modify">保存设置</button>
+                            <button type="button" id="cancelRegion" class="btn-settings btn-disable">取消</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+         // 页面加载时获取并显示用户信息
+        document.addEventListener('DOMContentLoaded', function() {
+            updateUserInfoDisplay();
+            setupHistoryActions();
+        });
+        
+        // 更新用户信息显示
+        function updateUserInfoDisplay() {
+            const userInfoContainer = document.getElementById('userInfoContainer');
+            const currentUserStr = sessionStorage.getItem('currentUser') || 
+                                localStorage.getItem('rememberedUser');
+            
+            if (currentUserStr) {
+                try {
+                    const currentUser = JSON.parse(currentUserStr);
+                    
+                    userInfoContainer.innerHTML = `
+                        <div class="user-info">
+                            <img src="${currentUser.avatar || 'static/images/VX/admin.png'}" 
+                                class="user-avatar" 
+                                alt="用户头像"
+                                onerror="this.src='static/images/VX/admin.png'">
+                            <span class="user-name">${currentUser.username || 'admin'}</span>
+                            <div class="user-dropdown">
+                                <a href="wode.html" class="profile-btn">个人中心</a>
+                                <a href="index.html" class="logout-btn">退出登录</a>
+                            </div>
+                        </div>
+                    `;
+                } catch (e) {
+                    console.error('解析用户数据失败:', e);
+                    showLoginButton();
+                }
+            } else {
+                showLoginButton();
+            }
+        }
+
+        // 显示登录按钮
+        function showLoginButton() {
+            const userInfoContainer = document.getElementById('userInfoContainer');
+            userInfoContainer.innerHTML = `
+                <a href="denglu.html" class="btn-login">登录/注册</a>
+            `;
+        }
+
+        // 处理退出登录
+        function handleLogout() {
+            sessionStorage.removeItem('currentUser');
+            localStorage.removeItem('rememberedUser');
+            window.location.href = 'index.html';
+        }
+
+        // 设置历史记录操作
+        function setupHistoryActions() {
+            // 查看按钮
+            document.querySelectorAll('.btn-view').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const title = this.closest('.history-item').querySelector('.history-title span').textContent;
+                    alert(`正在打开: ${title}`);
+                });
+            });
+            
+            // 删除按钮
+            document.querySelectorAll('.btn-delete').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const item = this.closest('.history-item');
+                    const title = item.querySelector('.history-title span').textContent;
+                    
+                    if(confirm(`确定要删除"${title}"的浏览记录吗？`)) {
+                        item.remove();
+                    }
+                });
+            });
+        }
+
+        
+        // 监听退出登录按钮点击事件
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('logout-btn')) {
+                handleLogout();
+            }
+        });
+        // 页面加载时初始化设置
+        document.addEventListener('DOMContentLoaded', function() {
+            // 从本地存储加载设置
+            loadSettings();
+            
+            // 设置主题功能
+            setupThemeSettings();
+            
+            // 设置数据更新频率功能
+            setupRefreshSettings();
+            
+            // 设置价格预警功能
+            setupAlertSettings();
+            
+            // 设置数据导出格式功能
+            setupExportSettings();
+            
+            // 设置默认显示区域功能
+            setupRegionSettings();
+        });
+        
+        // 从本地存储加载设置
+        function loadSettings() {
+            // 主题设置
+            const savedTheme = localStorage.getItem('themeColor') || 'purple';
+            const savedFontSize = localStorage.getItem('fontSize') || 'medium';
+            document.getElementById('themeColor').value = savedTheme;
+            document.getElementById('fontSize').value = savedFontSize;
+            applyTheme(savedTheme, savedFontSize);
+            
+            // 数据更新频率
+            const savedRefreshRate = localStorage.getItem('refreshRate') || 'hourly';
+            document.getElementById('refreshRate').value = savedRefreshRate;
+            updateRefreshRateDisplay(savedRefreshRate);
+            
+            // 价格预警
+            const savedAlertStatus = localStorage.getItem('alertStatus') || 'enabled';
+            updateAlertStatusDisplay(savedAlertStatus);
+            
+            // 数据导出格式
+            const savedExportFormat = localStorage.getItem('exportFormat') || 'pdf';
+            document.getElementById('exportFormat').value = savedExportFormat;
+            updateExportFormatDisplay(savedExportFormat);
+            
+            // 默认显示区域
+            const savedDefaultRegion = localStorage.getItem('defaultRegion') || 'east-china';
+            document.getElementById('defaultRegion').value = savedDefaultRegion;
+            updateDefaultRegionDisplay(savedDefaultRegion);
+        }
+        
+        // 设置主题功能
+        function setupThemeSettings() {
+            const modifyThemeBtn = document.getElementById('modifyThemeBtn');
+            const themeForm = document.getElementById('themeForm');
+            const cancelTheme = document.getElementById('cancelTheme');
+            const themeSettingsForm = document.getElementById('themeSettingsForm');
+            
+            // 显示主题设置表单
+            modifyThemeBtn.addEventListener('click', function() {
+                themeForm.style.display = 'block';
+            });
+            
+            // 取消主题设置
+            cancelTheme.addEventListener('click', function() {
+                themeForm.style.display = 'none';
+            });
+            
+            // 保存主题设置
+            themeSettingsForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const themeColor = document.getElementById('themeColor').value;
+                const fontSize = document.getElementById('fontSize').value;
+                
+                // 应用主题
+                applyTheme(themeColor, fontSize);
+                
+                // 保存到本地存储
+                localStorage.setItem('themeColor', themeColor);
+                localStorage.setItem('fontSize', fontSize);
+                
+                // 更新显示
+                updateThemeDisplay(themeColor);
+                
+                // 隐藏表单
+                themeForm.style.display = 'none';
+                
+                // 提示用户
+                alert('主题设置已保存！');
+            });
+        }
+        
+        // 应用主题样式
+        function applyTheme(themeColor, fontSize) {
+            // 移除现有主题类
+            document.body.classList.remove(
+                'theme-purple', 'theme-blue', 'theme-green', 'theme-dark',
+                'font-small', 'font-medium', 'font-large'
+            );
+            
+            // 添加新主题类
+            document.body.classList.add(`theme-${themeColor}`);
+            document.body.classList.add(`font-${fontSize}`);
+        }
+        
+        // 更新主题显示函数
+        function updateThemeDisplay(themeColor) {
+            let themeName = '';
+            switch(themeColor) {
+                case 'purple': themeName = '紫色主题'; break;
+                case 'blue': themeName = '蓝色主题'; break;
+                case 'green': themeName = '绿色主题'; break;
+                case 'dark': themeName = '深色模式'; break;
+                case 'red': themeName = '红色主题'; break;
+                case 'orange': themeName = '橙色主题'; break;
+                case 'pink': themeName = '粉色主题'; break;
+                case 'teal': themeName = '青绿色主题'; break;
+            }
+            document.getElementById('currentTheme').textContent = themeName;
+        }
+        
+        // 设置数据更新频率功能
+        function setupRefreshSettings() {
+            const modifyRefreshBtn = document.getElementById('modifyRefreshBtn');
+            const refreshForm = document.getElementById('refreshForm');
+            const cancelRefresh = document.getElementById('cancelRefresh');
+            const refreshSettingsForm = document.getElementById('refreshSettingsForm');
+            
+            // 显示更新频率设置表单
+            modifyRefreshBtn.addEventListener('click', function() {
+                refreshForm.style.display = 'block';
+            });
+            
+            // 取消更新频率设置
+            cancelRefresh.addEventListener('click', function() {
+                refreshForm.style.display = 'none';
+            });
+            
+            // 保存更新频率设置
+            refreshSettingsForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const refreshRate = document.getElementById('refreshRate').value;
+                
+                // 保存到本地存储
+                localStorage.setItem('refreshRate', refreshRate);
+                
+                // 更新显示
+                updateRefreshRateDisplay(refreshRate);
+                
+                // 隐藏表单
+                refreshForm.style.display = 'none';
+                
+                // 提示用户
+                alert('数据更新频率已设置！');
+            });
+        }
+        
+        // 更新数据更新频率显示
+        function updateRefreshRateDisplay(refreshRate) {
+            let rateName = '';
+            switch(refreshRate) {
+                case '15min': rateName = '每15分钟'; break;
+                case '30min': rateName = '每30分钟'; break;
+                case 'hourly': rateName = '每小时'; break;
+                case 'daily': rateName = '每日'; break;
+            }
+            document.getElementById('currentRefreshRate').textContent = rateName;
+        }
+        
+        // 设置价格预警功能
+        function setupAlertSettings() {
+            const toggleAlertBtn = document.getElementById('toggleAlertBtn');
+            
+            toggleAlertBtn.addEventListener('click', function() {
+                const currentStatus = localStorage.getItem('alertStatus') || 'enabled';
+                const newStatus = currentStatus === 'enabled' ? 'disabled' : 'enabled';
+                
+                // 保存到本地存储
+                localStorage.setItem('alertStatus', newStatus);
+                
+                // 更新显示
+                updateAlertStatusDisplay(newStatus);
+                
+                // 提示用户
+                alert(`价格预警已${newStatus === 'enabled' ? '启用' : '禁用'}！`);
+            });
+        }
+        
+        // 更新价格预警状态显示
+        function updateAlertStatusDisplay(status) {
+            const alertStatus = document.getElementById('currentAlertStatus');
+            const toggleAlertBtn = document.getElementById('toggleAlertBtn');
+            
+            if (status === 'enabled') {
+                alertStatus.textContent = '已启用';
+                alertStatus.classList.remove('inactive');
+                toggleAlertBtn.textContent = '禁用';
+                toggleAlertBtn.classList.remove('btn-enable');
+                toggleAlertBtn.classList.add('btn-disable');
+            } else {
+                alertStatus.textContent = '已禁用';
+                alertStatus.classList.add('inactive');
+                toggleAlertBtn.textContent = '启用';
+                toggleAlertBtn.classList.remove('btn-disable');
+                toggleAlertBtn.classList.add('btn-enable');
+            }
+        }
+        
+        // 设置数据导出格式功能
+        function setupExportSettings() {
+            const modifyExportBtn = document.getElementById('modifyExportBtn');
+            const exportForm = document.getElementById('exportForm');
+            const cancelExport = document.getElementById('cancelExport');
+            const exportSettingsForm = document.getElementById('exportSettingsForm');
+            
+            // 显示导出格式设置表单
+            modifyExportBtn.addEventListener('click', function() {
+                exportForm.style.display = 'block';
+            });
+            
+            // 取消导出格式设置
+            cancelExport.addEventListener('click', function() {
+                exportForm.style.display = 'none';
+            });
+            
+            // 保存导出格式设置
+            exportSettingsForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const exportFormat = document.getElementById('exportFormat').value;
+                
+                // 保存到本地存储
+                localStorage.setItem('exportFormat', exportFormat);
+                
+                // 更新显示
+                updateExportFormatDisplay(exportFormat);
+                
+                // 隐藏表单
+                exportForm.style.display = 'none';
+                
+                // 提示用户
+                alert('数据导出格式已设置！');
+            });
+        }
+        
+        // 更新数据导出格式显示
+        function updateExportFormatDisplay(format) {
+            let formatName = '';
+            switch(format) {
+                case 'pdf': formatName = 'PDF'; break;
+                case 'excel': formatName = 'Excel'; break;
+                case 'word': formatName = 'Word'; break;
+                case 'csv': formatName = 'CSV'; break;
+            }
+            document.getElementById('currentExportFormat').textContent = formatName;
+        }
+        
+        // 设置默认显示区域功能
+        function setupRegionSettings() {
+            const modifyRegionBtn = document.getElementById('modifyRegionBtn');
+            const regionForm = document.getElementById('regionForm');
+            const cancelRegion = document.getElementById('cancelRegion');
+            const regionSettingsForm = document.getElementById('regionSettingsForm');
+            
+            // 显示区域设置表单
+            modifyRegionBtn.addEventListener('click', function() {
+                regionForm.style.display = 'block';
+            });
+            
+            // 取消区域设置
+            cancelRegion.addEventListener('click', function() {
+                regionForm.style.display = 'none';
+            });
+            
+            // 保存区域设置
+            regionSettingsForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const defaultRegion = document.getElementById('defaultRegion').value;
+                
+                // 保存到本地存储
+                localStorage.setItem('defaultRegion', defaultRegion);
+                
+                // 更新显示
+                updateDefaultRegionDisplay(defaultRegion);
+                
+                // 隐藏表单
+                regionForm.style.display = 'none';
+                
+                // 提示用户
+                alert('默认显示区域已设置！');
+            });
+        }
+        
+        // 更新默认显示区域显示
+        function updateDefaultRegionDisplay(region) {
+            let regionName = '';
+            switch(region) {
+                case 'east-china': regionName = '华东地区'; break;
+                case 'north-china': regionName = '华北地区'; break;
+                case 'south-china': regionName = '华南地区'; break;
+                case 'central-china': regionName = '华中地区'; break;
+                case 'northeast': regionName = '东北地区'; break;
+                case 'northwest': regionName = '西北地区'; break;
+                case 'southwest': regionName = '西南地区'; break;
+            }
+            document.getElementById('currentDefaultRegion').textContent = regionName;
+        }
+ 
+    </script>
+</body>
+</html>

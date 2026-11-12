@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>葡萄价格分析平台 - 消息通知</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="static/css/zhuti.css">
+    <script src="static/js/zhuti.js"></script>
+    <style>
+        :root {
+            --primary-color: #6a3093;
+            --secondary-color: #a044ff;
+            --accent-color: #28a745;
+            --text-color: #333;
+            --light-gray: #f5f5f5;
+            --medium-gray: #e0e0e0;
+            --dark-gray: #757575;
+            --white: #ffffff;
+            --unread-bg: #f0f0ff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background-color: var(--light-gray);
+            color: var(--text-color);
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: none;
+            margin: 0 auto;
+            padding: 0;
+        }
+
+        /* 导航栏样式 */
+        header {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 1rem 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            height: 60px;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 100%;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--white);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            height: 100%;
+        }
+
+        .logo-img {
+            width: auto;
+            height: 60px;
+            max-height: 54px;
+            vertical-align: middle;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-links li {
+            margin-left: 2rem;
+        }
+
+        .nav-links a {
+            color: var(--white);
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--secondary-color);
+        }
+
+        /* 用户信息样式 */
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 18px;
+            object-fit: cover;
+            margin-right: 12px;
+            background-color: #f0f0f0;
+            border: 2px solid #eaeaea;
+            vertical-align: middle;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            border-radius: 20px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .user-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: var(--white);
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 10px 0;
+            min-width: 120px;
+            display: none;
+            z-index: 1000;
+        }
+
+        .user-dropdown a {
+            display: block;
+            padding: 8px 15px;
+            color: var(--text-color);
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .user-dropdown a:hover {
+            background-color: var(--light-gray);
+        }
+
+        .user-info:hover .user-dropdown {
+            display: block;
+        }
+
+        .logout-btn {
+            color: #dc3545 !important;
+            font-weight: 500;
+        }
+
+        .logout-btn:hover {
+            background-color: rgba(220, 53, 69, 0.1) !important;
+        }
+
+        .user-name {
+            font-size: 1rem;
+            color: var(--white);
+            font-weight: 500;
+        }
+
+        /* 消息通知内容样式 */
+        .notification-container {
+            display: flex;
+            margin-top: 30px;
+            gap: 30px;
+        }
+
+        .profile-sidebar {
+            width: 250px;
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 20px;
+            border: 3px solid var(--primary-color);
+        }
+
+        .profile-info h2 {
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        .profile-info p {
+            color: var(--dark-gray);
+        }
+         .profile-menu {
+            list-style: none;
+        }
+
+        .profile-menu li {
+            margin-bottom: 10px;
+        }
+        .profile-menu a {
+            display: block;
+            padding: 10px 15px;
+            color: var(--text-color);
+            text-decoration: none;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+
+        .profile-menu a:hover, .profile-menu a.active {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+
+        .profile-menu a i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .profile-section {
+            margin-bottom: 30px;
+        }
+
+        .profile-section h3 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .notification-main {
+            flex: 1;
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .notification-menu {
+            list-style: none;
+        }
+
+        .notification-menu li {
+            margin-bottom: 10px;
+        }
+
+        .notification-menu a {
+            display: block;
+            padding: 10px 15px;
+            color: var(--text-color);
+            text-decoration: none;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+
+        .notification-menu a:hover, .notification-menu a.active {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+
+        .notification-menu a i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .notification-section {
+            margin-bottom: 30px;
+        }
+
+        .notification-section h3 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .notification-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background-color: var(--light-gray);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .stat-card h4 {
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        .stat-card p {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        /* 消息列表样式 */
+        .notification-list {
+            list-style: none;
+        }
+
+        .notification-item {
+            padding: 15px;
+            border-bottom: 1px solid var(--medium-gray);
+            display: flex;
+            align-items: flex-start;
+            transition: background-color 0.3s;
+        }
+
+        .notification-item.unread {
+            background-color: var(--unread-bg);
+        }
+
+        .notification-item:hover {
+            background-color: var(--light-gray);
+        }
+
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .notification-time {
+            color: var(--dark-gray);
+            font-size: 0.85rem;
+        }
+
+        .notification-text {
+            color: var(--dark-gray);
+            font-size: 0.95rem;
+        }
+
+        .notification-actions {
+            margin-top: 10px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .notification-actions button {
+            padding: 3px 8px;
+            font-size: 0.8rem;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .notification-actions .btn-mark-read {
+            background-color: var(--medium-gray);
+            color: var(--text-color);
+        }
+
+        .notification-actions .btn-delete {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .notification-actions button:hover {
+            opacity: 0.8;
+        }
+
+      
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <header>
+        <div class="container">
+            <nav>
+                <a href="index.html" class="logo">
+                    <img src="static/images/logo/logo白.png" alt="" class="logo-img">
+                    <span class="logo-text">葡萄价格分析</span>
+                </a>
+                <ul class="nav-links" id="navLinks">
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="price-data.html">行情数据</a></li>
+                    <li><a href="market-analysis.html">市场分析</a></li>
+                    <li><a href="grape-varieties.html">葡萄品种</a></li>
+                    <li><a href="news.html">行业新闻</a></li>
+                    <li><a href="about.html">关于我们</a></li>
+                    <li id="userInfoContainer">
+                        <!-- 这里会动态显示用户信息或登录按钮 -->
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 消息通知内容 -->
+    <div class="container">
+        <div class="notification-container">
+            <!-- 侧边栏菜单 -->
+            <div class="profile-sidebar">
+                <ul class="notification-menu">
+                    <li><a href="wode.html"><i class="fas fa-user"></i> 个人资料</a></li>
+                    <li><a href="analysis.html"><i class="fas fa-chart-line"></i> 数据分析</a></li>
+                    <li><a href="notification.html" class="active"><i class="fas fa-bell"></i> 消息通知</a></li>
+                    <li><a href="security.html"><i class="fas fa-lock"></i> 安全设置</a></li>
+                    <li><a href="favorites.html"><i class="fas fa-heart"></i> 收藏内容</a></li>
+                    <li><a href="history.html"><i class="fas fa-history"></i> 浏览历史</a></li>
+                    <li><a href="settings.html"><i class="fas fa-cog"></i> 系统设置</a></li>
+                </ul>
+            </div>
+
+            <!-- 主内容区 -->
+            <div class="notification-main">
+                <div class="notification-section">
+                    <h3><i class="fas fa-bell"></i> 消息通知</h3>
+                    
+                    <div class="notification-stats">
+                        <div class="stat-card">
+                            <h4>未读消息</h4>
+                            <p>3</p>
+                        </div>
+                        <div class="stat-card">
+                            <h4>全部消息</h4>
+                            <p>12</p>
+                        </div>
+                        <div class="stat-card">
+                            <h4>系统通知</h4>
+                            <p>5</p>
+                        </div>
+                        <div class="stat-card">
+                            <h4>交易提醒</h4>
+                            <p>7</p>
+                        </div>
+                    </div>
+                    
+                    <!-- 消息列表 -->
+                    <ul class="notification-list">
+                        <!-- 未读消息 -->
+                        <li class="notification-item unread">
+                            <div class="notification-icon">
+                                <i class="fas fa-exclamation"></i>
+                            </div>
+                            <div class="notification-content">
+                                <div class="notification-title">
+                                    <span>价格预警：赤霞珠价格波动超过5%</span>
+                                    <span class="notification-time">10分钟前</span>
+                                </div>
+                                <div class="notification-text">
+                                    您关注的赤霞珠品种价格在今日10:15出现5.2%的上涨，当前价格为28.5元/公斤
+                                </div>
+                                <div class="notification-actions">
+                                    <button class="btn-mark-read">标记已读</button>
+                                    <button class="btn-delete">删除</button>
+                                </div>
+                            </div>
+                        </li>
+                        
+                        <li class="notification-item unread">
+                            <div class="notification-icon">
+                                <i class="fas fa-shopping-cart"></i>
+                            </div>
+                            <div class="notification-content">
+                                <div class="notification-title">
+                                    <span>交易提醒：您有新的订单待处理</span>
+                                    <span class="notification-time">1小时前</span>
+                                </div>
+                                <div class="notification-text">
+                                    客户"阳光果园"下单采购霞多丽200公斤，请及时处理订单
+                                </div>
+                                <div class="notification-actions">
+                                    <button class="btn-mark-read">标记已读</button>
+                                    <button class="btn-delete">删除</button>
+                                </div>
+                            </div>
+                        </li>
+                        
+                        <li class="notification-item unread">
+                            <div class="notification-icon">
+                                <i class="fas fa-info-circle"></i>
+                            </div>
+                            <div class="notification-content">
+                                <div class="notification-title">
+                                    <span>系统通知：新功能上线</span>
+                                    <span class="notification-time">3小时前</span>
+                                </div>
+                                <div class="notification-text">
+                                    数据分析模块新增季节性趋势分析功能，欢迎体验
+                                </div>
+                                <div class="notification-actions">
+                                    <button class="btn-mark-read">标记已读</button>
+                                    <button class="btn-delete">删除</button>
+                                </div>
+                            </div>
+                        </li>
+                        
+                        <!-- 已读消息 -->
+                        <li class="notification-item">
+                            <div class="notification-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="notification-content">
+                                <div class="notification-title">
+                                    <span>分析报告：您的月度分析报告已生成</span>
+                                    <span class="notification-time">昨天</span>
+                                </div>
+                                <div class="notification-text">
+                                    点击查看您上月的葡萄交易数据分析报告
+                                </div>
+                                <div class="notification-actions">
+                                    <button class="btn-mark-read">标记未读</button>
+                                    <button class="btn-delete">删除</button>
+                                </div>
+                            </div>
+                        </li>
+                        
+                        <li class="notification-item">
+                            <div class="notification-icon">
+                                <i class="fas fa-user-check"></i>
+                            </div>
+                            <div class="notification-content">
+                                <div class="notification-title">
+                                    <span>账户安全：登录提醒</span>
+                                    <span class="notification-time">2023-06-15</span>
+                                </div>
+                                <div class="notification-text">
+                                    您的账号于2023-06-15 14:30在北京市登录
+                                </div>
+                                <div class="notification-actions">
+                                    <button class="btn-mark-read">标记未读</button>
+                                    <button class="btn-delete">删除</button>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 页面加载时获取并显示用户信息
+        document.addEventListener('DOMContentLoaded', function() {
+            updateUserInfoDisplay();
+            setupNotificationActions();
+        });
+        
+        // 更新用户信息显示
+        function updateUserInfoDisplay() {
+            const userInfoContainer = document.getElementById('userInfoContainer');
+            const currentUserStr = sessionStorage.getItem('currentUser') || 
+                                localStorage.getItem('rememberedUser');
+            
+            if (currentUserStr) {
+                try {
+                    const currentUser = JSON.parse(currentUserStr);
+                    
+                    userInfoContainer.innerHTML = `
+                        <div class="user-info">
+                            <img src="${currentUser.avatar || 'static/images/VX/admin.png'}" 
+                                class="user-avatar" 
+                                alt="用户头像"
+                                onerror="this.src='static/images/VX/admin.png'">
+                            <span class="user-name">${currentUser.username || 'admin'}</span>
+                            <div class="user-dropdown">
+                                <a href="wode.html" class="profile-btn">个人中心</a>
+                                <a href="index.html" class="logout-btn">退出登录</a>
+                            </div>
+                        </div>
+                    `;
+                } catch (e) {
+                    console.error('解析用户数据失败:', e);
+                    showLoginButton();
+                }
+            } else {
+                showLoginButton();
+            }
+        }
+
+        // 显示登录按钮
+        function showLoginButton() {
+            const userInfoContainer = document.getElementById('userInfoContainer');
+            userInfoContainer.innerHTML = `
+                <a href="denglu.html" class="btn-login">登录/注册</a>
+            `;
+        }
+
+        // 处理退出登录
+        function handleLogout() {
+            sessionStorage.removeItem('currentUser');
+            localStorage.removeItem('rememberedUser');
+            window.location.href = 'index.html';
+        }
+
+        // 监听退出登录按钮点击事件
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('logout-btn')) {
+                handleLogout();
+            }
+        });
+
+        // 设置消息通知操作
+        function setupNotificationActions() {
+            // 标记已读/未读
+            document.querySelectorAll('.btn-mark-read').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const item = this.closest('.notification-item');
+                    const isUnread = item.classList.contains('unread');
+                    
+                    if (isUnread) {
+                        item.classList.remove('unread');
+                        this.textContent = '标记未读';
+                        updateUnreadCount(-1);
+                    } else {
+                        item.classList.add('unread');
+                        this.textContent = '标记已读';
+                        updateUnreadCount(1);
+                    }
+                });
+            });
+            
+            // 删除消息
+            document.querySelectorAll('.btn-delete').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const item = this.closest('.notification-item');
+                    const isUnread = item.classList.contains('unread');
+                    
+                    if (confirm('确定要删除这条消息吗？')) {
+                        item.remove();
+                        if (isUnread) {
+                            updateUnreadCount(-1);
+                        }
+                    }
+                });
+            });
+        }
+        
+        // 更新未读消息计数
+        function updateUnreadCount(change) {
+            const unreadStat = document.querySelector('.stat-card:nth-child(1) p');
+            let currentCount = parseInt(unreadStat.textContent);
+            currentCount += change;
+            unreadStat.textContent = Math.max(0, currentCount);
+        }
+    </script>
+</body>
+</html>

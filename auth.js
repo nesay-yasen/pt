@@ -1,0 +1,295 @@
+document.addEventListener('DOMContentLoaded', function() {
+    // 预定义用户数据（包含头像路径）
+// 预定义用户数据（使用外部图片链接）
+        // 预定义用户数据
+const users = [
+    {username: "admin", password: "123456", avatar: "../static/images/VX/admin.png"},
+    {username: "root", password: "@1234", avatar: "../static/images/VX/root.png"},
+    {username: "user", password: "1234", avatar: "../static/images/VX/user1.png"},
+    {username: "yasen", password: "12345678", avatar: "../static/images/VX/yasen.png"}
+];
+
+// 登录成功后的处理
+function handleLoginSuccess(user, remember) {
+    const userData = {
+        username: user.username,
+        avatar: user.avatar  // 直接使用预定义的正确路径
+    };
+    
+    if (remember) {
+        localStorage.setItem('rememberedUser', JSON.stringify(userData));
+    }
+    sessionStorage.setItem('currentUser', JSON.stringify(userData));
+    
+    updateAllPagesUserInfo();
+    window.location.href = 'index.html';
+}
+
+    // 密码显示/隐藏切换
+    const togglePassword = document.querySelector('.toggle-password');
+    if (togglePassword) {
+        togglePassword.addEventListener('click', function() {
+            const passwordInput = document.getElementById('password');
+            const icon = this.querySelector('i');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        });
+    }
+
+    // 登录表单处理
+    const loginForm = document.getElementById('loginForm');
+    if (loginForm) {
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const remember = document.getElementById('remember').checked;
+            
+            // 验证用户
+            const user = users.find(u => u.username === username && u.password === password);
+            
+            if (user) {
+                // 登录成功，保存用户信息（包括头像链接）
+                const userData = {
+                    username: user.username,
+                    avatar: user.avatar  // 使用预定义的头像链接
+                };
+                
+                if (remember) {
+                    localStorage.setItem('rememberedUser', JSON.stringify(userData));
+                }
+                sessionStorage.setItem('currentUser', JSON.stringify(userData));
+                
+                // 更新所有页面中的用户显示
+                updateAllPagesUserInfo();
+                
+                // 跳转到首页
+                window.location.href = 'index.html';
+            }
+        });
+    }
+    
+    // 检查是否有记住的用户
+    const rememberedUser = localStorage.getItem('rememberedUser');
+    if (rememberedUser) {
+        const user = JSON.parse(rememberedUser);
+        document.getElementById('username').value = user.username;
+        document.getElementById('remember').checked = true;
+    }
+
+    // 注册页面密码强度检测
+    const passwordInput = document.getElementById('password');
+    if (passwordInput) {
+        passwordInput.addEventListener('input', function() {
+            updatePasswordStrength(this.value);
+        });
+    }
+
+    // 注册表单处理
+    const registerForm = document.getElementById('registerForm');
+    if (registerForm) {
+        registerForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            // 验证
+            if (password !== confirmPassword) {
+                showAlert('两次输入的密码不一致', 'error');
+                return;
+            }
+            
+            if (!document.getElementById('agreeTerms').checked) {
+                showAlert('请同意服务条款和隐私政策', 'error');
+                return;
+            }
+            
+            // 检查用户名是否已存在
+            if (users.some(u => u.username === username)) {
+                showAlert('用户名已存在', 'error');
+                return;
+            }
+            
+            // 模拟注册成功
+            showAlert('注册成功！', 'success');
+            
+            // 自动登录新用户
+            const newUser = {
+                username: username,
+                password: password,
+                avatar: './images/touxiang/default.png' // 使用默认头像
+            };
+            
+            const userData = {
+                username: newUser.username,
+                avatar: newUser.avatar
+            };
+            
+            sessionStorage.setItem('currentUser', JSON.stringify(userData));
+            
+            // 更新所有页面中的用户显示
+            updateAllPagesUserInfo();
+            
+            // 3秒后跳转到首页
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1500);
+        });
+    }
+
+    // 初始化页面时更新用户信息显示
+    updateUserInfoDisplay();
+});
+
+// 更新所有页面中的用户信息显示
+function updateAllPagesUserInfo() {
+    // 获取当前用户数据
+    const currentUserStr = sessionStorage.getItem('currentUser');
+    if (!currentUserStr) return;
+    
+    try {
+        const currentUser = JSON.parse(currentUserStr);
+        
+        // 更新当前页面的用户信息
+        updateUserInfoDisplay();
+        
+        // 通过localStorage事件通知其他页面更新
+        localStorage.setItem('userInfoUpdate', JSON.stringify({
+            timestamp: new Date().getTime(),
+            user: currentUser
+        }));
+    } catch (e) {
+        console.error('解析用户数据失败:', e);
+    }
+}
+
+// 监听其他页面的用户信息更新
+window.addEventListener('storage', function(e) {
+    if (e.key === 'userInfoUpdate') {
+        updateUserInfoDisplay();
+    }
+});
+
+function updateUserInfoDisplay() {
+    const userInfoContainer = document.getElementById('userInfoContainer');
+    const currentUserStr = sessionStorage.getItem('currentUser');
+    
+    if (currentUserStr) {
+        try {
+            const currentUser = JSON.parse(currentUserStr);
+            
+            // 用户已登录，显示头像和用户名
+            userInfoContainer.innerHTML = `
+                <div class="user-info">
+                    <img src="${currentUser.avatar}" alt="${currentUser.username}的头像" class="user-avatar">
+                    <span class="user-name">${currentUser.username}</span>
+                </div>
+            `;
+        } catch (e) {
+            console.error('解析用户数据失败:', e);
+            // 显示登录按钮作为回退
+            userInfoContainer.innerHTML = `
+                <a href="denglu.html" class="btn-login">登录/注册</a>
+            `;
+        }
+    } else {
+        // 用户未登录，显示登录按钮
+        userInfoContainer.innerHTML = `
+            <a href="denglu.html" class="btn-login">登录/注册</a>
+        `;
+    }
+}
+
+// 密码强度检测函数
+function updatePasswordStrength(password) {
+    const strengthIndicator = document.querySelector('.password-strength');
+    const strengthBar = document.querySelector('.strength-bar');
+    const strengthText = document.querySelector('.strength-text');
+    
+    if (!strengthIndicator) return;
+    
+    // 重置样式
+    strengthIndicator.className = 'password-strength';
+    
+    if (password.length === 0) {
+        strengthBar.style.width = '0';
+        strengthText.textContent = '';
+        return;
+    }
+    
+    // 评估密码强度
+    let strength = 0;
+    if (password.length >= 6) strength++;
+    if (password.length >= 8) strength++;
+    if (/\d/.test(password)) strength++;
+    if (/[A-Z]/.test(password)) strength++;
+    if (/[^A-Za-z0-9]/.test(password)) strength++;
+    
+    // 更新UI
+    if (strength <= 2) {
+        strengthIndicator.classList.add('weak');
+        strengthBar.style.width = '33%';
+        strengthText.textContent = '密码强度: 弱';
+    } else if (strength <= 4) {
+        strengthIndicator.classList.add('medium');
+        strengthBar.style.width = '66%';
+        strengthText.textContent = '密码强度: 中';
+    } else {
+        strengthIndicator.classList.add('strong');
+        strengthBar.style.width = '100%';
+        strengthText.textContent = '密码强度: 强';
+    }
+}
+
+// 显示提示消息
+function showAlert(message, type) {
+    // 移除现有的提示
+    const existingAlert = document.querySelector('.alert-message');
+    if (existingAlert) {
+        existingAlert.remove();
+    }
+    
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert-message ${type}`;
+    alertDiv.textContent = message;
+    
+    // 添加到表单顶部
+    const form = document.querySelector('form');
+    if (form) {
+        form.insertBefore(alertDiv, form.firstChild);
+    } else {
+        document.body.insertBefore(alertDiv, document.body.firstChild);
+    }
+    
+    // 3秒后自动消失
+    setTimeout(() => {
+        alertDiv.remove();
+    }, 3000);
+}
+
+// 自动登录新用户
+const newUser = {
+    username: username,
+    password: password,
+    avatar: 'C:\Users\XS-01\Desktop\gaitmp\static\images\VX\putong.png' // 使用默认头像
+};
+
+const userData = {
+    username: newUser.username,
+    avatar: newUser.avatar
+};
+
+sessionStorage.setItem('currentUser', JSON.stringify(userData));
+
+// 页面加载时执行
+document.addEventListener('DOMContentLoaded', updateUserInfoDisplay);
