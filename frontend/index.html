@@ -1,12 +1,785 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>葡萄产业信息站 · 品种 / 行情 / 栽培</title>
-  </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.js"></script>
-  </body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeSpace · 技术博客</title>
+    <style>
+        /* ========== Reset & Base ========== */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0a0e17;
+            --bg-secondary: #111827;
+            --bg-card: #151f32;
+            --border: #1e293b;
+            --border-hover: #334155;
+            --text-primary: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --accent: #38bdf8;
+            --accent-glow: rgba(56, 189, 248, 0.15);
+            --accent-2: #818cf8;
+            --tag-bg: rgba(56, 189, 248, 0.08);
+            --shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+            --radius: 12px;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ========== Background Grid ========== */
+        .bg-grid {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            background-image:
+                linear-gradient(rgba(30, 41, 59, 0.3) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(30, 41, 59, 0.3) 1px, transparent 1px);
+            background-size: 60px 60px;
+            mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 20%, transparent 70%);
+            -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 20%, transparent 70%);
+        }
+
+        /* ========== Layout ========== */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ========== Navbar ========== */
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(10, 14, 23, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 14px 0;
+        }
+
+        .navbar .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 8px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            padding: 8px 14px;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--accent);
+            background: var(--tag-bg);
+        }
+
+        /* ========== Hero ========== */
+        .hero {
+            padding: 80px 0 50px;
+            text-align: center;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px;
+            background: var(--tag-bg);
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            font-size: 0.8rem;
+            color: var(--accent);
+            margin-bottom: 24px;
+        }
+
+        .hero-badge .dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--accent);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.8); }
+        }
+
+        .hero h1 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 800;
+            letter-spacing: -1px;
+            line-height: 1.2;
+            margin-bottom: 16px;
+        }
+
+        .hero h1 .gradient {
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 560px;
+            margin: 0 auto;
+        }
+
+        /* ========== Search & Filter ========== */
+        .toolbar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 240px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 11px 16px 11px 40px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-box input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+
+        .search-box input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .search-box .icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.9rem;
+            opacity: 0.5;
+        }
+
+        .filter-chips {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 36px;
+        }
+
+        .chip {
+            padding: 7px 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            user-select: none;
+        }
+
+        .chip:hover {
+            border-color: var(--border-hover);
+            color: var(--text-primary);
+        }
+
+        .chip.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #0a0e17;
+            font-weight: 600;
+        }
+
+        /* ========== Article List ========== */
+        .section-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .article-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .article-card {
+            display: flex;
+            gap: 20px;
+            padding: 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.25s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .article-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(180deg, var(--accent), var(--accent-2));
+            opacity: 0;
+            transition: opacity 0.25s;
+        }
+
+        .article-card:hover {
+            border-color: var(--border-hover);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .article-card:hover::before {
+            opacity: 1;
+        }
+
+        .article-card:hover .article-title {
+            color: var(--accent);
+        }
+
+        .article-card:hover .article-arrow {
+            transform: translateX(4px);
+            opacity: 1;
+        }
+
+        .article-main {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .article-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+
+        .article-meta .date {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .article-meta .read-time {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .article-meta .sep {
+            width: 3px;
+            height: 3px;
+            border-radius: 50%;
+            background: var(--text-muted);
+        }
+
+        .article-tags {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .article-tag {
+            padding: 2px 10px;
+            background: var(--tag-bg);
+            border-radius: 4px;
+            font-size: 0.72rem;
+            color: var(--accent);
+        }
+
+        .article-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -0.3px;
+            transition: color 0.2s;
+        }
+
+        .article-excerpt {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .article-side {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            justify-content: space-between;
+            flex-shrink: 0;
+        }
+
+        .article-arrow {
+            font-size: 1.2rem;
+            color: var(--accent);
+            opacity: 0.4;
+            transition: all 0.25s;
+        }
+
+        .article-views {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        /* ========== Footer ========== */
+        .footer {
+            border-top: 1px solid var(--border);
+            padding: 40px 0;
+            margin-top: 60px;
+            text-align: center;
+        }
+
+        .footer p {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+        }
+
+        .footer .links {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 16px;
+        }
+
+        .footer .links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color 0.2s;
+        }
+
+        .footer .links a:hover {
+            color: var(--accent);
+        }
+
+        /* ========== Scrollbar ========== */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-hover);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
+
+        /* ========== Selection ========== */
+        ::selection {
+            background: var(--accent);
+            color: #0a0e17;
+        }
+
+        /* ========== Responsive ========== */
+        @media (max-width: 640px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero {
+                padding: 50px 0 30px;
+            }
+
+            .article-card {
+                flex-direction: column;
+                gap: 12px;
+                padding: 20px;
+            }
+
+            .article-side {
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+            }
+
+            .toolbar {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Animated Grid Background -->
+    <div class="bg-grid"></div>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="#" class="logo">
+                <span class="logo-icon">⌘</span>
+                CodeSpace
+            </a>
+            <ul class="nav-links">
+                <li><a href="#" class="active">首页</a></li>
+                <li><a href="#articles">文章</a></li>
+                <li><a href="#">归档</a></li>
+                <li><a href="#">关于</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-badge">
+                <span class="dot"></span>
+                持续更新中
+            </div>
+            <h1>记录代码与<span class="gradient">思考</span>的每一刻</h1>
+            <p>分享前端开发、系统设计、开源工具与技术随笔 —— 一个程序员的学习笔记与灵感碎片。</p>
+        </div>
+    </section>
+
+    <!-- Main -->
+    <main class="container">
+
+        <!-- Toolbar -->
+        <div class="toolbar">
+            <div class="search-box">
+                <span class="icon">🔍</span>
+                <input type="text" placeholder="搜索文章关键词..." id="searchInput">
+            </div>
+        </div>
+
+        <!-- Filter Chips -->
+        <div class="filter-chips" id="filterChips">
+            <span class="chip active" data-filter="all">全部</span>
+            <span class="chip" data-filter="frontend">前端</span>
+            <span class="chip" data-filter="backend">后端</span>
+            <span class="chip" data-filter="devops">DevOps</span>
+            <span class="chip" data-filter="ai">AI</span>
+            <span class="chip" data-filter="essay">随笔</span>
+        </div>
+
+        <!-- Article List -->
+        <div class="section-label">最新文章</div>
+
+        <div class="article-list" id="articleList">
+
+            <a href="#" class="article-card" data-category="frontend">
+                <div class="article-main">
+                    <div class="article-meta">
+                        <span class="date">📅 2026-11-08</span>
+                        <span class="sep"></span>
+                        <span class="read-time">⏱ 8 分钟</span>
+                    </div>
+                    <h2 class="article-title">深入理解 React Server Components 的工作原理</h2>
+                    <p class="article-excerpt">RSC 改变了我们对 React 应用的传统认知。本文从渲染管线、数据获取策略、打包体积优化三个维度，结合实际案例剖析 Server Components 的核心机制与最佳实践。</p>
+                    <div class="article-tags">
+                        <span class="article-tag">React</span>
+                        <span class="article-tag">Next.js</span>
+                        <span class="article-tag">架构</span>
+                    </div>
+                </div>
+                <div class="article-side">
+                    <span class="article-arrow">→</span>
+                    <span class="article-views">👁 3,241 阅读</span>
+                </div>
+            </a>
+
+            <a href="#" class="article-card" data-category="ai">
+                <div class="article-main">
+                    <div class="article-meta">
+                        <span class="date">📅 2026-11-02</span>
+                        <span class="sep"></span>
+                        <span class="read-time">⏱ 12 分钟</span>
+                    </div>
+                    <h2 class="article-title">从零搭建本地 LLM 推理服务：Ollama + FastAPI 实战</h2>
+                    <p class="article-excerpt">不想依赖第三方 API？本文将带你用 Ollama 部署开源大模型，配合 FastAPI 封装为高性能推理服务，并讨论量化策略、并发优化与流式输出实现。</p>
+                    <div class="article-tags">
+                        <span class="article-tag">LLM</span>
+                        <span class="article-tag">Python</span>
+                        <span class="article-tag">部署</span>
+                    </div>
+                </div>
+                <div class="article-side">
+                    <span class="article-arrow">→</span>
+                    <span class="article-views">👁 5,876 阅读</span>
+                </div>
+            </a>
+
+            <a href="#" class="article-card" data-category="devops">
+                <div class="article-main">
+                    <div class="article-meta">
+                        <span class="date">📅 2026-10-28</span>
+                        <span class="sep"></span>
+                        <span class="read-time">⏱ 6 分钟</span>
+                    </div>
+                    <h2 class="article-title">Docker 多阶段构建：把镜像体积砍掉 90% 的技巧</h2>
+                    <p class="article-excerpt">一个真实 Go 项目从 1.2GB 优化到 12MB 的全过程。详解多阶段构建的写法、.dockerignore 的坑、distroless 镜像选择，以及 CI/CD 中的缓存策略。</p>
+                    <div class="article-tags">
+                        <span class="article-tag">Docker</span>
+                        <span class="article-tag">CI/CD</span>
+                        <span class="article-tag">优化</span>
+                    </div>
+                </div>
+                <div class="article-side">
+                    <span class="article-arrow">→</span>
+                    <span class="article-views">👁 2,158 阅读</span>
+                </div>
+            </a>
+
+            <a href="#" class="article-card" data-category="backend">
+                <div class="article-main">
+                    <div class="article-meta">
+                        <span class="date">📅 2026-10-20</span>
+                        <span class="sep"></span>
+                        <span class="read-time">⏱ 15 分钟</span>
+                    </div>
+                    <h2 class="article-title">高并发场景下 Redis 缓存击穿、穿透、雪崩的全面防御</h2>
+                    <p class="article-excerpt">缓存三大经典问题看似简单，实际生产中坑不少。本文给出一套完整的防御方案：互斥锁、逻辑过期、布隆过滤器、随机 TTL，并附 Go 与 Java 双语言实现代码。</p>
+                    <div class="article-tags">
+                        <span class="article-tag">Redis</span>
+                        <span class="article-tag">高并发</span>
+                        <span class="article-tag">Go</span>
+                    </div>
+                </div>
+                <div class="article-side">
+                    <span class="article-arrow">→</span>
+                    <span class="article-views">👁 8,432 阅读</span>
+                </div>
+            </a>
+
+            <a href="#" class="article-card" data-category="frontend">
+                <div class="article-main">
+                    <div class="article-meta">
+                        <span class="date">📅 2026-10-15</span>
+                        <span class="sep"></span>
+                        <span class="read-time">⏱ 10 分钟</span>
+                    </div>
+                    <h2 class="article-title">CSS Container Queries 终于来了：告别媒体查询的组件级响应式</h2>
+                    <p class="article-excerpt">Container Queries 让组件可以根据自身尺寸而非视口尺寸响应布局变化。本文通过多个实战场景展示其语法、浏览器兼容性以及与传统媒体查询的最佳组合方式。</p>
+                    <div class="article-tags">
+                        <span class="article-tag">CSS</span>
+                        <span class="article-tag">响应式</span>
+                        <span class="article-tag">新特性</span>
+                    </div>
+                </div>
+                <div class="article-side">
+                    <span class="article-arrow">→</span>
+                    <span class="article-views">👁 1,763 阅读</span>
+                </div>
+            </a>
+
+            <a href="#" class="article-card" data-category="essay">
+                <div class="article-main">
+                    <div class="article-meta">
+                        <span class="date">📅 2026-10-10</span>
+                        <span class="sep"></span>
+                        <span class="read-time">⏱ 5 分钟</span>
+                    </div>
+                    <h2 class="article-title">独立开发者的第 100 天：我做对了什么，又踩了哪些坑</h2>
+                    <p class="article-excerpt">从辞职到全职独立开发满 100 天了。聊聊这段时间的收入变化、时间管理心得、技术选型复盘，以及那些「早知道就不这么做」的决定。</p>
+                    <div class="article-tags">
+                        <span class="article-tag">独立开发</span>
+                        <span class="article-tag">复盘</span>
+                    </div>
+                </div>
+                <div class="article-side">
+                    <span class="article-arrow">→</span>
+                    <span class="article-views">👁 4,021 阅读</span>
+                </div>
+            </a>
+
+            <a href="#" class="article-card" data-category="backend">
+                <div class="article-main">
+                    <div class="article-meta">
+                        <span class="date">📅 2026-10-05</span>
+                        <span class="sep"></span>
+                        <span class="read-time">⏱ 9 分钟</span>
+                    </div>
+                    <h2 class="article-title">PostgreSQL 索引调优实战：EXPLAIN ANALYZE 完全解读</h2>
+                    <p class="article-excerpt">一条慢查询从 12s 到 23ms 的优化全过程。详解如何阅读 EXPLAIN ANALYZE 输出、选择合适的索引类型（B-tree / GIN / BRIN）、避免索引失效的常见写法。</p>
+                    <div class="article-tags">
+                        <span class="article-tag">PostgreSQL</span>
+                        <span class="article-tag">数据库</span>
+                        <span class="article-tag">性能</span>
+                    </div>
+                </div>
+                <div class="article-side">
+                    <span class="article-arrow">→</span>
+                    <span class="article-views">👁 2,987 阅读</span>
+                </div>
+            </a>
+
+            <a href="#" class="article-card" data-category="frontend">
+                <div class="article-main">
+                    <div class="article-meta">
+                        <span class="date">📅 2026-09-28</span>
+                        <span class="sep"></span>
+                        <span class="read-time">⏱ 7 分钟</span>
+                    </div>
+                    <h2 class="article-title">用 WebAssembly 给前端应用加速：从 C++ 移植计算密集型模块</h2>
+                    <p class="article-excerpt">当 JavaScript 不够快时，WebAssembly 是答案。本文记录将一个图像处理算法从 C++ 编译到 WASM 的完整流程，性能对比数据及实际落地经验。</p>
+                    <div class="article-tags">
+                        <span class="article-tag">WebAssembly</span>
+                        <span class="article-tag">C++</span>
+                        <span class="article-tag">性能优化</span>
+                    </div>
+                </div>
+                <div class="article-side">
+                    <span class="article-arrow">→</span>
+                    <span class="article-views">👁 1,542 阅读</span>
+                </div>
+            </a>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="links">
+                <a href="#">GitHub</a>
+                <a href="#">RSS</a>
+                <a href="#">邮箱订阅</a>
+                <a href="#">友链</a>
+            </div>
+            <p style="margin-top: 16px;">© 2026 CodeSpace · Built with passion & ☕</p>
+        </div>
+    </footer>
+
+    <!-- ========== JavaScript ========== -->
+    <script>
+        // --- Filter ---
+        const chips = document.querySelectorAll('.chip');
+        const cards = document.querySelectorAll('.article-card');
+        const searchInput = document.getElementById('searchInput');
+
+        let currentFilter = 'all';
+        let currentSearch = '';
+
+        function applyFilter() {
+            cards.forEach(card => {
+                const matchCategory = currentFilter === 'all' || card.dataset.category === currentFilter;
+                const title = card.querySelector('.article-title').textContent.toLowerCase();
+                const excerpt = card.querySelector('.article-excerpt').textContent.toLowerCase();
+                const matchSearch = title.includes(currentSearch) || excerpt.includes(currentSearch);
+                const visible = matchCategory && matchSearch;
+                card.style.display = visible ? 'flex' : 'none';
+            });
+        }
+
+        chips.forEach(chip => {
+            chip.addEventListener('click', () => {
+                chips.forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+                currentFilter = chip.dataset.filter;
+                applyFilter();
+            });
+        });
+
+        // --- Search ---
+        searchInput.addEventListener('input', (e) => {
+            currentSearch = e.target.value.toLowerCase().trim();
+            applyFilter();
+        });
+
+        // --- Smooth scroll for nav links ---
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                document.querySelectorAll('.nav-links a').forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
+            });
+        });
+    </script>
+
+</body>
 </html>
